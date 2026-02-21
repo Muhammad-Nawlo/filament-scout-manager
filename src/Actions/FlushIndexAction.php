@@ -16,7 +16,7 @@ class FlushIndexAction extends Action
     {
         parent::setUp();
 
-        $this->label('Flush Index')
+        $this->label(__('filament-scout-manager::filament-scout-manager.actions.flush.label'))
             ->icon('heroicon-o-trash')
             ->color('danger')
             ->action(function ($record) {
@@ -25,19 +25,19 @@ class FlushIndexAction extends Action
                 try {
                     $modelClass::removeAllFromSearch();
                     Notification::make()
-                        ->title("Successfully flushed all {$modelClass} records from search index.")
+                        ->title(__('filament-scout-manager::filament-scout-manager.actions.flush.success', ['model' => $modelClass]))
                         ->success()
                         ->send();
                 } catch (\Exception $e) {
                     Notification::make()
-                        ->title('Failed to flush: ' . $e->getMessage())
+                        ->title(__('filament-scout-manager::filament-scout-manager.actions.flush.failed', ['message' => $e->getMessage()]))
                         ->danger()
                         ->send();
                 }
             })
             ->requiresConfirmation()
-            ->modalHeading('Flush Search Index')
-            ->modalDescription('This will remove all records from the search index. This action cannot be undone.')
-            ->modalSubmitActionLabel('Yes, flush them');
+            ->modalHeading(__('filament-scout-manager::filament-scout-manager.actions.flush.modal_heading'))
+            ->modalDescription(__('filament-scout-manager::filament-scout-manager.actions.flush.modal_description'))
+            ->modalSubmitActionLabel(__('filament-scout-manager::filament-scout-manager.actions.flush.modal_submit'));
     }
 }

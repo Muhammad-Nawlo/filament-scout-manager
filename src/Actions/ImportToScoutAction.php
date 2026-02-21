@@ -16,7 +16,7 @@ class ImportToScoutAction extends Action
     {
         parent::setUp();
 
-        $this->label('Import to Index')
+        $this->label(__('filament-scout-manager::filament-scout-manager.actions.import.label'))
             ->icon('heroicon-o-arrow-up-on-square')
             ->color('success')
             ->action(function ($record) {
@@ -25,19 +25,19 @@ class ImportToScoutAction extends Action
                 try {
                     $modelClass::makeAllSearchable();
                     Notification::make()
-                        ->title("Successfully imported all {$modelClass} records.")
+                        ->title(__('filament-scout-manager::filament-scout-manager.actions.import.success', ['model' => $modelClass]))
                         ->success()
                         ->send();
                 } catch (\Exception $e) {
                     Notification::make()
-                        ->title('Failed to import: ' . $e->getMessage())
+                        ->title(__('filament-scout-manager::filament-scout-manager.actions.import.failed', ['message' => $e->getMessage()]))
                         ->danger()
                         ->send();
                 }
             })
             ->requiresConfirmation()
-            ->modalHeading('Import to Search Index')
-            ->modalDescription('This will import all records from this model into the search index. This might take a while for large datasets.')
-            ->modalSubmitActionLabel('Yes, import them');
+            ->modalHeading(__('filament-scout-manager::filament-scout-manager.actions.import.modal_heading'))
+            ->modalDescription(__('filament-scout-manager::filament-scout-manager.actions.import.modal_description'))
+            ->modalSubmitActionLabel(__('filament-scout-manager::filament-scout-manager.actions.import.modal_submit'));
     }
 }

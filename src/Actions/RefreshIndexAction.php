@@ -16,7 +16,7 @@ class RefreshIndexAction extends Action
     {
         parent::setUp();
 
-        $this->label('Refresh Index')
+        $this->label(__('filament-scout-manager::filament-scout-manager.actions.refresh.label'))
             ->icon('heroicon-o-arrow-path')
             ->color('warning')
             ->action(function ($record) {
@@ -26,19 +26,19 @@ class RefreshIndexAction extends Action
                     $modelClass::removeAllFromSearch();
                     $modelClass::makeAllSearchable();
                     Notification::make()
-                        ->title("Successfully refreshed index for {$modelClass}.")
+                        ->title(__('filament-scout-manager::filament-scout-manager.actions.refresh.success', ['model' => $modelClass]))
                         ->success()
                         ->send();
                 } catch (\Exception $e) {
                     Notification::make()
-                        ->title('Failed to refresh: ' . $e->getMessage())
+                        ->title(__('filament-scout-manager::filament-scout-manager.actions.refresh.failed', ['message' => $e->getMessage()]))
                         ->danger()
                         ->send();
                 }
             })
             ->requiresConfirmation()
-            ->modalHeading('Refresh Search Index')
-            ->modalDescription('This will remove all records and re-import them. This might take a while for large datasets.')
-            ->modalSubmitActionLabel('Yes, refresh');
+            ->modalHeading(__('filament-scout-manager::filament-scout-manager.actions.refresh.modal_heading'))
+            ->modalDescription(__('filament-scout-manager::filament-scout-manager.actions.refresh.modal_description'))
+            ->modalSubmitActionLabel(__('filament-scout-manager::filament-scout-manager.actions.refresh.modal_submit'));
     }
 }

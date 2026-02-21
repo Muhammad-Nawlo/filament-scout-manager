@@ -20,24 +20,41 @@ class SynonymResource extends Resource
 
     protected static string | null | \BackedEnum $navigationIcon = 'heroicon-o-link';
 
-    protected static string | null | \UnitEnum $navigationGroup = 'Search';
 
-    protected static ?string $navigationLabel = 'Synonyms';
 
     protected static ?string $slug = 'synonyms';
 
-    protected static ?string $modelLabel = 'Synonym Group';
 
-    protected static ?string $pluralModelLabel = 'Synonyms';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament-scout-manager::filament-scout-manager.navigation.group');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament-scout-manager::filament-scout-manager.navigation.synonyms');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament-scout-manager::filament-scout-manager.synonyms.single');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament-scout-manager::filament-scout-manager.synonyms.plural');
+    }
+
+
 
     public static function form($form): \Filament\Schemas\Schema
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Synonym Group')
+                Forms\Components\Section::make(__('filament-scout-manager::filament-scout-manager.synonyms.sections.group'))
                     ->schema([
                         Forms\Components\Select::make('model_type')
-                            ->label('Model')
+                            ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.model'))
                             ->options(function () {
                                 $classes = SearchableModelResource::getSearchableModelClasses();
 
@@ -45,36 +62,36 @@ class SynonymResource extends Resource
                             })
                             ->required()
                             ->searchable()
-                            ->helperText('Select the model this synonym group applies to.'),
+                            ->helperText(__('filament-scout-manager::filament-scout-manager.synonyms.helpers.model')),
 
                         Forms\Components\TextInput::make('word')
-                            ->label('Word')
+                            ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.word'))
                             ->required()
                             ->maxLength(255)
-                            ->helperText('The main word that will have synonyms.'),
+                            ->helperText(__('filament-scout-manager::filament-scout-manager.synonyms.helpers.word')),
 
                         Forms\Components\Repeater::make('synonyms')
-                            ->label('Synonyms')
+                            ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.synonyms'))
                             ->schema([
                                 Forms\Components\TextInput::make('synonym')
-                                    ->label('Synonym')
+                                    ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.synonym'))
                                     ->required()
                                     ->distinct()
                                     ->maxLength(255),
                             ])
                             ->itemLabel(fn (array $state): ?string => $state['synonym'] ?? null)
                             ->defaultItems(0)
-                            ->addActionLabel('Add Synonym')
+                            ->addActionLabel(__('filament-scout-manager::filament-scout-manager.synonyms.actions.add_synonym'))
                             ->reorderable(false)
                             ->grid(2)
                             ->required()
-                            ->helperText('Enter words that should be treated as synonyms for the main word.'),
+                            ->helperText(__('filament-scout-manager::filament-scout-manager.synonyms.helpers.synonyms')),
 
                         Forms\Components\KeyValue::make('engine_settings')
-                            ->label('Engine-Specific Settings')
-                            ->keyLabel('Setting')
-                            ->valueLabel('Value')
-                            ->helperText('Additional settings for the selected engine (optional).')
+                            ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.engine_settings'))
+                            ->keyLabel(__('filament-scout-manager::filament-scout-manager.synonyms.fields.setting'))
+                            ->valueLabel(__('filament-scout-manager::filament-scout-manager.synonyms.fields.value'))
+                            ->helperText(__('filament-scout-manager::filament-scout-manager.synonyms.helpers.engine_settings'))
                             ->columnSpanFull(),
                     ]),
             ]);
@@ -85,36 +102,36 @@ class SynonymResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('word')
-                    ->label('Word')
+                    ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.word'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
 
                 TextColumn::make('model_type')
-                    ->label('Model')
+                    ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.model'))
                     ->formatStateUsing(fn ($state) => class_basename($state))
                     ->sortable()
                     ->searchable(),
 
                 TagsColumn::make('synonyms')
-                    ->label('Synonyms')
+                    ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.synonyms'))
                     ->limit(5)
                     ->separator(', '),
 
                 TextColumn::make('created_at')
-                    ->label('Created')
+                    ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.created'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label('Updated')
+                    ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.updated'))
                     ->since()
                     ->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('model_type')
-                    ->label('Model')
+                    ->label(__('filament-scout-manager::filament-scout-manager.synonyms.fields.model'))
                     ->options(function () {
                         $classes = SearchableModelResource::getSearchableModelClasses();
 

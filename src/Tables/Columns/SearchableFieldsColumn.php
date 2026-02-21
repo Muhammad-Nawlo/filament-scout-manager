@@ -47,7 +47,7 @@ class SearchableFieldsColumn extends Column
         $fields = $this->getState();
 
         if (empty($fields)) {
-            return 'No fields configured';
+            return __('filament-scout-manager::filament-scout-manager.models.fields.no_fields_configured');
         }
 
         $displayFields = array_slice($fields, 0, 3);
@@ -59,7 +59,7 @@ class SearchableFieldsColumn extends Column
         }
 
         if ($remaining > 0) {
-            $html .= '<span class="text-xs text-gray-500">+' . $remaining . ' more</span>';
+            $html .= '<span class="text-xs text-gray-500">' . __('filament-scout-manager::filament-scout-manager.models.fields.more_count', ['count' => $remaining]) . '</span>';
         }
 
         return $html;

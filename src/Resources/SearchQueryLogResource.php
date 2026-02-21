@@ -25,75 +25,92 @@ class SearchQueryLogResource extends Resource
 
     protected static string | null | \BackedEnum $navigationIcon = 'heroicon-o-magnifying-glass-circle';
 
-    protected static string | null | \UnitEnum $navigationGroup = 'Search';
 
-    protected static ?string $navigationLabel = 'Search Logs';
 
     protected static ?string $slug = 'search-logs';
 
-    protected static ?string $modelLabel = 'Search Log';
 
-    protected static ?string $pluralModelLabel = 'Search Logs';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament-scout-manager::filament-scout-manager.navigation.group');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament-scout-manager::filament-scout-manager.navigation.logs');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament-scout-manager::filament-scout-manager.logs.single');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament-scout-manager::filament-scout-manager.logs.plural');
+    }
+
+
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 TextColumn::make('query')
-                    ->label('Query')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.query'))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('model_type')
-                    ->label('Model')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.model'))
                     ->formatStateUsing(fn ($state) => class_basename($state))
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('result_count')
-                    ->label('Results')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.results'))
                     ->numeric()
                     ->sortable()
                     ->color(fn ($state) => $state > 0 ? 'success' : 'danger'),
 
                 TextColumn::make('execution_time')
-                    ->label('Time (s)')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.time'))
                     ->numeric(2)
                     ->sortable(),
 
                 TextColumn::make('user.name')
-                    ->label('User')
-                    ->default('Guest')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.user'))
+                    ->default(__('filament-scout-manager::filament-scout-manager.common.guest'))
                     ->sortable(),
 
                 TextColumn::make('ip_address')
-                    ->label('IP Address')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.ip_address'))
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('successful')
-                    ->label('Success')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.success'))
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle'),
 
                 TextColumn::make('created_at')
-                    ->label('Date')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.date'))
                     ->dateTime('Y-m-d H:i:s')
                     ->sortable(),
             ])
             ->filters([
                 Filter::make('successful')
-                    ->label('Successful only')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.filters.successful_only'))
                     ->query(fn (Builder $query) => $query->where('successful', true))
                     ->toggle(),
 
                 Filter::make('failed')
-                    ->label('Failed only')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.filters.failed_only'))
                     ->query(fn (Builder $query) => $query->where('successful', false))
                     ->toggle(),
 
                 SelectFilter::make('model_type')
-                    ->label('Model')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.model'))
                     ->options(function () {
                         return SearchQueryLog::query()
                             ->distinct()
@@ -104,8 +121,8 @@ class SearchQueryLogResource extends Resource
 
                 Tables\Filters\Filter::make('created_at')
                     ->form([
-                        Forms\Components\DatePicker::make('from'),
-                        Forms\Components\DatePicker::make('until'),
+                        Forms\Components\DatePicker::make('from')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.from')),
+                        Forms\Components\DatePicker::make('until')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.until')),
                     ])
                     ->query(function (Builder $query, array $data) {
                         return $query
@@ -115,33 +132,33 @@ class SearchQueryLogResource extends Resource
             ])
             ->actions([
                 Action::make('view')
-                    ->label('View Details')
+                    ->label(__('filament-scout-manager::filament-scout-manager.logs.actions.view'))
                     ->icon('heroicon-o-eye')
-                    ->modalHeading('Search Log Details')
+                    ->modalHeading(__('filament-scout-manager::filament-scout-manager.logs.modal.details_heading'))
                     ->modalWidth('lg')
                     ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Close')
+                    ->modalCancelActionLabel(__('filament-scout-manager::filament-scout-manager.logs.actions.close'))
                     ->fillForm(fn (SearchQueryLog $record): array => [
                         'query' => $record->query,
                         'model' => class_basename($record->model_type),
                         'results' => $record->result_count,
-                        'time' => $record->execution_time . ' seconds',
-                        'user' => $record->user?->name ?? 'Guest',
+                        'time' => __('filament-scout-manager::filament-scout-manager.logs.values.seconds', ['seconds' => $record->execution_time]),
+                        'user' => $record->user?->name ?? __('filament-scout-manager::filament-scout-manager.common.guest'),
                         'ip' => $record->ip_address,
                         'user_agent' => $record->user_agent,
-                        'success' => $record->successful ? 'Yes' : 'No',
+                        'success' => $record->successful ? __('filament-scout-manager::filament-scout-manager.common.yes') : __('filament-scout-manager::filament-scout-manager.common.no'),
                         'created' => $record->created_at->format('Y-m-d H:i:s'),
                     ])
                     ->form([
-                        Forms\Components\TextInput::make('query')->disabled(),
-                        Forms\Components\TextInput::make('model')->disabled(),
-                        Forms\Components\TextInput::make('results')->disabled(),
-                        Forms\Components\TextInput::make('time')->disabled(),
-                        Forms\Components\TextInput::make('user')->disabled(),
-                        Forms\Components\TextInput::make('ip')->disabled(),
-                        Forms\Components\Textarea::make('user_agent')->disabled()->columnSpanFull(),
-                        Forms\Components\TextInput::make('success')->disabled(),
-                        Forms\Components\TextInput::make('created')->disabled(),
+                        Forms\Components\TextInput::make('query')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.query'))->disabled(),
+                        Forms\Components\TextInput::make('model')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.model'))->disabled(),
+                        Forms\Components\TextInput::make('results')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.results'))->disabled(),
+                        Forms\Components\TextInput::make('time')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.time'))->disabled(),
+                        Forms\Components\TextInput::make('user')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.user'))->disabled(),
+                        Forms\Components\TextInput::make('ip')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.ip_address'))->disabled(),
+                        Forms\Components\Textarea::make('user_agent')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.user_agent'))->disabled()->columnSpanFull(),
+                        Forms\Components\TextInput::make('success')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.success'))->disabled(),
+                        Forms\Components\TextInput::make('created')->label(__('filament-scout-manager::filament-scout-manager.logs.fields.created'))->disabled(),
                     ]),
 
                 DeleteAction::make(),
@@ -150,19 +167,19 @@ class SearchQueryLogResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     BulkAction::make('prune_old')
-                        ->label('Prune Older Than...')
+                        ->label(__('filament-scout-manager::filament-scout-manager.logs.actions.prune_old'))
                         ->icon('heroicon-o-trash')
                         ->color('warning')
                         ->form([
                             Forms\Components\DateTimePicker::make('before')
-                                ->label('Delete logs before')
+                                ->label(__('filament-scout-manager::filament-scout-manager.logs.fields.before'))
                                 ->required()
                                 ->default(now()->subDays(config('filament-scout-manager.log_retention_days', 30))),
                         ])
                         ->action(function (array $data) {
                             $deleted = SearchQueryLog::where('created_at', '<', $data['before'])->delete();
                             Notification::make()
-                                ->title("Deleted {$deleted} old search logs.")
+                                ->title(__('filament-scout-manager::filament-scout-manager.logs.notifications.pruned', ['count' => $deleted]))
                                 ->success()
                                 ->send();
                         })

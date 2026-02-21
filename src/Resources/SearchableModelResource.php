@@ -25,28 +25,45 @@ class SearchableModelResource extends Resource
 {
     protected static string | null | \BackedEnum $navigationIcon = 'heroicon-o-cube';
 
-    protected static string | null | \UnitEnum $navigationGroup = 'Search';
 
-    protected static ?string $navigationLabel = 'Searchable Models';
 
     protected static ?string $slug = 'searchable-models';
 
-    protected static ?string $modelLabel = 'Searchable Model';
 
-    protected static ?string $pluralModelLabel = 'Searchable Models';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament-scout-manager::filament-scout-manager.navigation.group');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament-scout-manager::filament-scout-manager.navigation.models');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament-scout-manager::filament-scout-manager.models.single');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament-scout-manager::filament-scout-manager.models.plural');
+    }
+
+
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Model')
+                    ->label(__('filament-scout-manager::filament-scout-manager.models.fields.name'))
                     ->searchable()
                     ->sortable()
                     ->formatStateUsing(fn ($state) => class_basename($state)),
 
                 TextColumn::make('index_name')
-                    ->label('Index Name')
+                    ->label(__('filament-scout-manager::filament-scout-manager.models.fields.index_name'))
                     ->getStateUsing(function ($record) {
                         $model = new $record->class;
 
@@ -54,33 +71,33 @@ class SearchableModelResource extends Resource
                     }),
 
                 TextColumn::make('total_records')
-                    ->label('Total Records')
+                    ->label(__('filament-scout-manager::filament-scout-manager.models.fields.total_records'))
                     ->numeric()
                     ->getStateUsing(function ($record) {
                         try {
                             return $record->class::count();
                         } catch (\Exception $e) {
-                            return 'N/A';
+                            return __('filament-scout-manager::filament-scout-manager.common.not_available');
                         }
                     }),
 
                 TextColumn::make('indexed_records')
-                    ->label('Indexed Records')
+                    ->label(__('filament-scout-manager::filament-scout-manager.models.fields.indexed_records'))
                     ->getStateUsing(function ($record) {
                         try {
                             $raw = $record->class::search('')->raw();
 
-                            return $raw['nbHits'] ?? 'N/A';
+                            return $raw['nbHits'] ?? __('filament-scout-manager::filament-scout-manager.common.not_available');
                         } catch (\Exception $e) {
-                            return 'Not indexed';
+                            return __('filament-scout-manager::filament-scout-manager.models.helpers.not_indexed');
                         }
                     }),
 
                 SearchableFieldsColumn::make('searchable_fields')
-                    ->label('Searchable Fields'),
+                    ->label(__('filament-scout-manager::filament-scout-manager.models.fields.searchable_fields')),
 
                 TextColumn::make('engine')
-                    ->label('Search Engine')
+                    ->label(__('filament-scout-manager::filament-scout-manager.models.fields.engine'))
                     ->getStateUsing(function ($record) {
                         $model = new $record->class;
                         $engine = $model->searchableUsing();
@@ -97,7 +114,7 @@ class SearchableModelResource extends Resource
                     }),
 
                 IconColumn::make('is_searchable')
-                    ->label('Searchable')
+                    ->label(__('filament-scout-manager::filament-scout-manager.models.fields.searchable'))
                     ->boolean()
                     ->getStateUsing(function ($record) {
                         return in_array(
@@ -107,7 +124,7 @@ class SearchableModelResource extends Resource
                     }),
 
                 IconColumn::make('has_custom_settings')
-                    ->label('Custom')
+                    ->label(__('filament-scout-manager::filament-scout-manager.models.fields.custom'))
                     ->boolean()
                     ->getStateUsing(function ($record) {
                         $settings = app(FilamentScoutManagerSettings::class);
@@ -118,8 +135,8 @@ class SearchableModelResource extends Resource
                     ->falseIcon('heroicon-o-x-mark'),
 
                 TextColumn::make('last_sync')
-                    ->label('Last Sync')
-                    ->getStateUsing(fn () => 'N/A')
+                    ->label(__('filament-scout-manager::filament-scout-manager.models.fields.last_sync'))
+                    ->getStateUsing(fn () => __('filament-scout-manager::filament-scout-manager.common.not_available'))
                     ->since(),
             ])
             ->actions([
@@ -134,7 +151,7 @@ class SearchableModelResource extends Resource
                         ->visible(fn ($record) => static::isSearchable($record->class)),
 
                     Tables\Actions\EditAction::make('configure')
-                        ->label('Configure')
+                        ->label(__('filament-scout-manager::filament-scout-manager.models.actions.configure'))
                         ->icon('heroicon-o-cog')
                         ->url(fn ($record) => static::getUrl('edit', ['record' => $record->id]))
                         ->visible(fn ($record) => static::isSearchable($record->class)),
@@ -143,7 +160,7 @@ class SearchableModelResource extends Resource
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('bulk_import')
-                        ->label('Import Selected')
+                        ->label(__('filament-scout-manager::filament-scout-manager.models.actions.bulk_import'))
                         ->icon('heroicon-o-arrow-up-on-square')
                         ->action(function (Collection $records) {
                             $successCount = 0;
@@ -159,7 +176,7 @@ class SearchableModelResource extends Resource
                                 }
                             }
                             Notification::make()
-                                ->title("Import completed: {$successCount} succeeded, {$failCount} failed.")
+                                ->title(__('filament-scout-manager::filament-scout-manager.models.notifications.import_completed', ['success' => $successCount, 'fail' => $failCount]))
                                 ->success()
                                 ->send();
                         })
@@ -167,7 +184,7 @@ class SearchableModelResource extends Resource
                         ->deselectRecordsAfterCompletion(),
 
                     BulkAction::make('bulk_flush')
-                        ->label('Flush Selected')
+                        ->label(__('filament-scout-manager::filament-scout-manager.models.actions.bulk_flush'))
                         ->icon('heroicon-o-trash')
                         ->color('danger')
                         ->action(function (Collection $records) {
@@ -184,7 +201,7 @@ class SearchableModelResource extends Resource
                                 }
                             }
                             Notification::make()
-                                ->title("Flush completed: {$successCount} succeeded, {$failCount} failed.")
+                                ->title(__('filament-scout-manager::filament-scout-manager.models.notifications.flush_completed', ['success' => $successCount, 'fail' => $failCount]))
                                 ->success()
                                 ->send();
                         })
@@ -198,56 +215,56 @@ class SearchableModelResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Model Configuration')
+                Forms\Components\Section::make(__('filament-scout-manager::filament-scout-manager.models.sections.configuration'))
                     ->schema([
                         Forms\Components\Placeholder::make('model_class')
-                            ->label('Model Class')
+                            ->label(__('filament-scout-manager::filament-scout-manager.models.fields.model_class'))
                             ->content(fn ($record) => $record->class ?? ''),
 
                         Forms\Components\Select::make('searchable_fields')
-                            ->label('Searchable Fields')
+                            ->label(__('filament-scout-manager::filament-scout-manager.models.fields.searchable_fields'))
                             ->multiple()
                             ->options(function ($record) {
                                 return static::getModelFields($record->class ?? $record);
                             })
-                            ->helperText('Select which fields should be searchable (requires custom toSearchableArray implementation).'),
+                            ->helperText(__('filament-scout-manager::filament-scout-manager.models.helpers.searchable_fields')),
 
                         Forms\Components\Select::make('engine_override')
-                            ->label('Override Engine')
+                            ->label(__('filament-scout-manager::filament-scout-manager.models.fields.engine_override'))
                             ->options([
-                                '' => 'Use Default',
-                                'algolia' => 'Algolia',
-                                'meilisearch' => 'Meilisearch',
-                                'database' => 'Database Engine',
-                                'collection' => 'Collection Engine',
+                                '' => __('filament-scout-manager::filament-scout-manager.models.engine_options.default'),
+                                'algolia' => __('filament-scout-manager::filament-scout-manager.models.engine_options.algolia'),
+                                'meilisearch' => __('filament-scout-manager::filament-scout-manager.models.engine_options.meilisearch'),
+                                'database' => __('filament-scout-manager::filament-scout-manager.models.engine_options.database'),
+                                'collection' => __('filament-scout-manager::filament-scout-manager.models.engine_options.collection'),
                             ])
-                            ->helperText('Override the default search engine for this model.'),
+                            ->helperText(__('filament-scout-manager::filament-scout-manager.models.helpers.engine_override')),
 
                         Forms\Components\KeyValue::make('engine_settings')
-                            ->label('Engine-Specific Settings')
-                            ->keyLabel('Setting')
-                            ->valueLabel('Value')
-                            ->helperText('Additional settings for the selected engine (e.g., searchableAttributes for Algolia).'),
+                            ->label(__('filament-scout-manager::filament-scout-manager.models.fields.engine_settings'))
+                            ->keyLabel(__('filament-scout-manager::filament-scout-manager.synonyms.fields.setting'))
+                            ->valueLabel(__('filament-scout-manager::filament-scout-manager.synonyms.fields.value'))
+                            ->helperText(__('filament-scout-manager::filament-scout-manager.models.helpers.engine_settings')),
                     ]),
 
-                Forms\Components\Section::make('Index Settings')
+                Forms\Components\Section::make(__('filament-scout-manager::filament-scout-manager.models.sections.index_settings'))
                     ->schema([
                         Forms\Components\TextInput::make('index_name_override')
-                            ->label('Custom Index Name')
-                            ->helperText('Leave empty to use the default searchableAs.'),
+                            ->label(__('filament-scout-manager::filament-scout-manager.models.fields.index_name_override'))
+                            ->helperText(__('filament-scout-manager::filament-scout-manager.models.helpers.index_name_override')),
 
                         Forms\Components\Toggle::make('should_be_searchable')
-                            ->label('Enable Searchable')
+                            ->label(__('filament-scout-manager::filament-scout-manager.models.fields.should_be_searchable'))
                             ->default(true)
                             ->disabled(),
 
                         Forms\Components\Select::make('queue_connection')
-                            ->label('Queue Connection')
+                            ->label(__('filament-scout-manager::filament-scout-manager.models.fields.queue_connection'))
                             ->options([
-                                'sync' => 'Sync (No Queue)',
-                                'database' => 'Database',
-                                'redis' => 'Redis',
-                                'sqs' => 'SQS',
+                                'sync' => __('filament-scout-manager::filament-scout-manager.models.queue_options.sync'),
+                                'database' => __('filament-scout-manager::filament-scout-manager.models.queue_options.database'),
+                                'redis' => __('filament-scout-manager::filament-scout-manager.models.queue_options.redis'),
+                                'sqs' => __('filament-scout-manager::filament-scout-manager.models.queue_options.sqs'),
                             ])
                             ->default(config('scout.queue')),
                     ]),
