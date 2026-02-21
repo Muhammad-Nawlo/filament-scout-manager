@@ -8,11 +8,12 @@ use MuhammadNawlo\FilamentScoutManager\Models\SearchQueryLog;
 class PopularSearchesWidget extends Widget
 {
     protected string $view = 'filament-scout-manager::widgets.popular-searches';
-    protected int|string|array $columnSpan = 'half';
+
+    protected int | string | array $columnSpan = 'half';
 
     public function getData(): array
     {
-        if (!config('filament-scout-manager.log_searches', true)) {
+        if (! config('filament-scout-manager.log_searches', true)) {
             return [];
         }
 

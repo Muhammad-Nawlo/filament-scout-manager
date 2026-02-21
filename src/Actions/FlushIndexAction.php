@@ -2,8 +2,8 @@
 
 namespace MuhammadNawlo\FilamentScoutManager\Actions;
 
-use Filament\Tables\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 
 class FlushIndexAction extends Action
 {
@@ -21,6 +21,7 @@ class FlushIndexAction extends Action
             ->color('danger')
             ->action(function ($record) {
                 $modelClass = $record->class ?? $record;
+
                 try {
                     $modelClass::removeAllFromSearch();
                     Notification::make()
@@ -29,7 +30,7 @@ class FlushIndexAction extends Action
                         ->send();
                 } catch (\Exception $e) {
                     Notification::make()
-                        ->title("Failed to flush: " . $e->getMessage())
+                        ->title('Failed to flush: ' . $e->getMessage())
                         ->danger()
                         ->send();
                 }

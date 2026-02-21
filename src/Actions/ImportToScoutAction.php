@@ -2,8 +2,8 @@
 
 namespace MuhammadNawlo\FilamentScoutManager\Actions;
 
-use Filament\Tables\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 
 class ImportToScoutAction extends Action
 {
@@ -21,6 +21,7 @@ class ImportToScoutAction extends Action
             ->color('success')
             ->action(function ($record) {
                 $modelClass = $record->class ?? $record;
+
                 try {
                     $modelClass::makeAllSearchable();
                     Notification::make()
@@ -29,7 +30,7 @@ class ImportToScoutAction extends Action
                         ->send();
                 } catch (\Exception $e) {
                     Notification::make()
-                        ->title("Failed to import: " . $e->getMessage())
+                        ->title('Failed to import: ' . $e->getMessage())
                         ->danger()
                         ->send();
                 }

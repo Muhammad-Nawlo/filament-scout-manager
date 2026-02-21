@@ -3,14 +3,15 @@
 namespace MuhammadNawlo\FilamentScoutManager\Widgets;
 
 use Filament\Widgets\Widget;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Laravel\Scout\Searchable;
 
 class IndexStatusWidget extends Widget
 {
     protected string $view = 'filament-scout-manager::widgets.index-status';
-    protected int|string|array $columnSpan = 'full';
+
+    protected int | string | array $columnSpan = 'full';
 
     public function getData(): array
     {
@@ -38,7 +39,9 @@ class IndexStatusWidget extends Widget
                     try {
                         $indexedRecords = $modelClass::search('')->raw()['nbHits'] ?? 0;
                         $stats['indexed_records'] += $indexedRecords;
-                        if ($indexedRecords > 0) $stats['indexed_models']++;
+                        if ($indexedRecords > 0) {
+                            $stats['indexed_models']++;
+                        }
                     } catch (\Exception $e) {
                         // ignore
                     }

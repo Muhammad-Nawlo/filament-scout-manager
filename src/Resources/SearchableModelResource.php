@@ -3,31 +3,36 @@
 namespace MuhammadNawlo\FilamentScoutManager\Resources;
 
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Notifications\Notification;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
-use MuhammadNawlo\FilamentScoutManager\Actions\ImportToScoutAction;
 use MuhammadNawlo\FilamentScoutManager\Actions\FlushIndexAction;
+use MuhammadNawlo\FilamentScoutManager\Actions\ImportToScoutAction;
 use MuhammadNawlo\FilamentScoutManager\Actions\RefreshIndexAction;
-use MuhammadNawlo\FilamentScoutManager\Tables\Columns\SearchableFieldsColumn;
 use MuhammadNawlo\FilamentScoutManager\Settings\FilamentScoutManagerSettings;
+use MuhammadNawlo\FilamentScoutManager\Tables\Columns\SearchableFieldsColumn;
 
 class SearchableModelResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-cube';
+
     protected static ?string $navigationGroup = 'Search';
+
     protected static ?string $navigationLabel = 'Searchable Models';
+
     protected static ?string $slug = 'searchable-models';
+
     protected static ?string $modelLabel = 'Searchable Model';
+
     protected static ?string $pluralModelLabel = 'Searchable Models';
 
     public static function table(Table $table): Table
@@ -44,6 +49,7 @@ class SearchableModelResource extends Resource
                     ->label('Index Name')
                     ->getStateUsing(function ($record) {
                         $model = new $record->class;
+
                         return $model->searchableAs();
                     }),
 
@@ -63,6 +69,7 @@ class SearchableModelResource extends Resource
                     ->getStateUsing(function ($record) {
                         try {
                             $raw = $record->class::search('')->raw();
+
                             return $raw['nbHits'] ?? 'N/A';
                         } catch (\Exception $e) {
                             return 'Not indexed';
@@ -77,6 +84,7 @@ class SearchableModelResource extends Resource
                     ->getStateUsing(function ($record) {
                         $model = new $record->class;
                         $engine = $model->searchableUsing();
+
                         return class_basename($engine);
                     })
                     ->badge()
@@ -103,6 +111,7 @@ class SearchableModelResource extends Resource
                     ->boolean()
                     ->getStateUsing(function ($record) {
                         $settings = app(FilamentScoutManagerSettings::class);
+
                         return $settings->getModelConfig($record->class) !== null;
                     })
                     ->trueIcon('heroicon-o-cog')
@@ -259,17 +268,24 @@ class SearchableModelResource extends Resource
 
         $items = [];
         foreach ($classes as $class) {
-            $items[] = new class($class) {
+            $items[] = new class($class)
+            {
                 public $id;
+
                 public $class;
+
                 public function __construct($class)
                 {
                     $this->id = md5($class);
                     $this->class = $class;
                 }
+
                 public function __get($key)
                 {
-                    if ($key === 'id') return $this->id;
+                    if ($key === 'id') {
+                        return $this->id;
+                    }
+
                     return null;
                 }
             };
@@ -301,7 +317,7 @@ class SearchableModelResource extends Resource
 
         $configured = config('filament-scout-manager.models', []);
         foreach ($configured as $modelClass => $settings) {
-            if (class_exists($modelClass) && static::isSearchable($modelClass) && !in_array($modelClass, $classes)) {
+            if (class_exists($modelClass) && static::isSearchable($modelClass) && ! in_array($modelClass, $classes)) {
                 $classes[] = $modelClass;
             }
         }
@@ -315,6 +331,7 @@ class SearchableModelResource extends Resource
             $model = new $class;
             $table = $model->getTable();
             $columns = Schema::getColumnListing($table);
+
             return array_combine($columns, $columns);
         } catch (\Exception $e) {
             return [];

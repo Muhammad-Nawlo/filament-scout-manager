@@ -2,8 +2,8 @@
 
 namespace MuhammadNawlo\FilamentScoutManager\Actions;
 
-use Filament\Tables\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 
 class RefreshIndexAction extends Action
 {
@@ -21,6 +21,7 @@ class RefreshIndexAction extends Action
             ->color('warning')
             ->action(function ($record) {
                 $modelClass = $record->class ?? $record;
+
                 try {
                     $modelClass::removeAllFromSearch();
                     $modelClass::makeAllSearchable();
@@ -30,7 +31,7 @@ class RefreshIndexAction extends Action
                         ->send();
                 } catch (\Exception $e) {
                     Notification::make()
-                        ->title("Failed to refresh: " . $e->getMessage())
+                        ->title('Failed to refresh: ' . $e->getMessage())
                         ->danger()
                         ->send();
                 }

@@ -18,14 +18,16 @@ class SearchableFieldsColumn extends Column
             $model = new $modelClass;
             if (method_exists($model, 'toSearchableArray')) {
                 $example = $model->toSearchableArray();
+
                 return array_keys($example);
             }
 
-            if (method_exists($model, 'getFillable') && !empty($model->getFillable())) {
+            if (method_exists($model, 'getFillable') && ! empty($model->getFillable())) {
                 return $model->getFillable();
             }
 
             $table = $model->getTable();
+
             return Schema::getColumnListing($table);
         } catch (\Exception $e) {
             return [];

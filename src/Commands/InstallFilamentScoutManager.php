@@ -18,7 +18,7 @@ class InstallFilamentScoutManager extends Command
         // Publish migrations
         $this->call('vendor:publish', [
             '--provider' => 'MuhammadNawlo\\FilamentScoutManager\\FilamentScoutManagerServiceProvider',
-            '--tag' => 'migrations'
+            '--tag' => 'migrations',
         ]);
 
         // Run migrations
@@ -27,13 +27,13 @@ class InstallFilamentScoutManager extends Command
         // Publish config
         $this->call('vendor:publish', [
             '--provider' => 'MuhammadNawlo\\FilamentScoutManager\\FilamentScoutManagerServiceProvider',
-            '--tag' => 'config'
+            '--tag' => 'config',
         ]);
 
         // Publish assets
         $this->call('vendor:publish', [
             '--provider' => 'MuhammadNawlo\\FilamentScoutManager\\FilamentScoutManagerServiceProvider',
-            '--tag' => 'filament-scout-manager-assets'
+            '--tag' => 'filament-scout-manager-assets',
         ]);
 
         // Initialize settings
