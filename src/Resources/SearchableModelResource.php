@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Schemas\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -217,7 +218,7 @@ class SearchableModelResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make(__('filament-scout-manager::filament-scout-manager.models.sections.configuration'))
+              Section::make(__('filament-scout-manager::filament-scout-manager.models.sections.configuration'))
                     ->schema([
                         Forms\Components\Placeholder::make('model_class')
                             ->label(__('filament-scout-manager::filament-scout-manager.models.fields.model_class'))
@@ -249,7 +250,7 @@ class SearchableModelResource extends Resource
                             ->helperText(__('filament-scout-manager::filament-scout-manager.models.helpers.engine_settings')),
                     ]),
 
-                Forms\Components\Section::make(__('filament-scout-manager::filament-scout-manager.models.sections.index_settings'))
+                Section::make(__('filament-scout-manager::filament-scout-manager.models.sections.index_settings'))
                     ->schema([
                         Forms\Components\TextInput::make('index_name_override')
                             ->label(__('filament-scout-manager::filament-scout-manager.models.fields.index_name_override'))
