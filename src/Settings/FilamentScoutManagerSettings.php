@@ -8,6 +8,13 @@ class FilamentScoutManagerSettings extends Settings
 {
     public array $models = [];
 
+    public static function defaults(): array
+    {
+        return [
+            'models' => [],
+        ];
+    }
+
     public static function group(): string
     {
         return 'filament-scout-manager';
