@@ -1,12 +1,15 @@
 {
     "name": "muhammad-nawlo/filament-scout-manager",
-    "description": "A comprehensive Filament plugin for Laravel Scou",
+    "description": "A comprehensive Filament plugin for managing Laravel Scout indexes and search settings",
     "keywords": [
         "Muhammad-Nawlo",
         "laravel",
         "filamentphp",
         "filament",
         "filament-plugin",
+        "Scout",
+        "Index",
+        "Search",
         "filament-scout-manager"
     ],
     "homepage": "https://github.com/muhammad-nawlo/filament-scout-manager",
