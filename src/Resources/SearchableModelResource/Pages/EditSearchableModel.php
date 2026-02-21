@@ -12,6 +12,10 @@ class EditSearchableModel extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        if (! FilamentScoutManagerSettings::repositoryTableExists()) {
+            return $data;
+        }
+
         $settings = app(FilamentScoutManagerSettings::class);
         $modelClass = $this->getRecord()->class;
         $config = $settings->getModelConfig($modelClass) ?? [];
@@ -21,6 +25,10 @@ class EditSearchableModel extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        if (! FilamentScoutManagerSettings::repositoryTableExists()) {
+            return $data;
+        }
+
         $settings = app(FilamentScoutManagerSettings::class);
         $modelClass = $this->getRecord()->class;
 

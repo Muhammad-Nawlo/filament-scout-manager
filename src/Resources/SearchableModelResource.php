@@ -19,12 +19,14 @@ use Illuminate\Support\Facades\Schema;
 use MuhammadNawlo\FilamentScoutManager\Actions\FlushIndexAction;
 use MuhammadNawlo\FilamentScoutManager\Actions\ImportToScoutAction;
 use MuhammadNawlo\FilamentScoutManager\Actions\RefreshIndexAction;
-use MuhammadNawlo\FilamentScoutManager\Models\SearchQueryLog;
+use MuhammadNawlo\FilamentScoutManager\Models\SearchableModel;
 use MuhammadNawlo\FilamentScoutManager\Settings\FilamentScoutManagerSettings;
 use MuhammadNawlo\FilamentScoutManager\Tables\Columns\SearchableFieldsColumn;
 
 class SearchableModelResource extends Resource
 {
+    protected static ?string $model = SearchableModel::class;
+
     protected static string | null | \BackedEnum $navigationIcon = 'heroicon-o-cube';
 
     protected static ?string $slug = 'searchable-models';
@@ -124,6 +126,10 @@ class SearchableModelResource extends Resource
                     ->label(__('filament-scout-manager::filament-scout-manager.models.fields.custom'))
                     ->boolean()
                     ->getStateUsing(function ($record) {
+                        if (! FilamentScoutManagerSettings::repositoryTableExists()) {
+                            return false;
+                        }
+
                         $settings = app(FilamentScoutManagerSettings::class);
 
                         return $settings->getModelConfig($record->class) !== null;
@@ -133,8 +139,7 @@ class SearchableModelResource extends Resource
 
                 TextColumn::make('last_sync')
                     ->label(__('filament-scout-manager::filament-scout-manager.models.fields.last_sync'))
-                    ->getStateUsing(fn () => __('filament-scout-manager::filament-scout-manager.common.not_available'))
-                    ->since(),
+                    ->getStateUsing(fn () => __('filament-scout-manager::filament-scout-manager.common.not_available')),
             ])
             ->actions([
                 ActionGroup::make([
@@ -281,7 +286,7 @@ class SearchableModelResource extends Resource
         $classes = static::getSearchableModelClasses();
 
         if ($classes === []) {
-            return SearchQueryLog::query()
+            return SearchableModel::query()
                 ->selectRaw('NULL as id, NULL as class, NULL as name')
                 ->whereRaw('1 = 0');
         }
@@ -298,7 +303,7 @@ class SearchableModelResource extends Resource
             $query = $query === null ? $select : $query->unionAll($select);
         }
 
-        return SearchQueryLog::query()->fromSub($query, 'searchable_models');
+        return SearchableModel::query()->fromSub($query, 'searchable_models');
     }
 
     protected static function isSearchable(string $class): bool
