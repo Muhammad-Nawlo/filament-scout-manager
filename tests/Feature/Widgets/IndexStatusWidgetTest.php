@@ -14,3 +14,11 @@ test('widget returns array data', function () {
     expect($data)->toBeArray()
         ->toHaveKeys(['total_models', 'indexed_models', 'total_records', 'indexed_records', 'engines']);
 });
+
+test('widget exposes stats overview cards', function () {
+    $widget = new IndexStatusWidget;
+
+    $stats = invade($widget)->getStats();
+
+    expect($stats)->toBeArray()->toHaveCount(3);
+});
