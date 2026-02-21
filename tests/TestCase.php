@@ -37,6 +37,16 @@ class TestCase extends Orchestra
             'prefix' => '',
         ]);
 
+        $app['config']->set('settings.default_repository', 'database');
+        $app['config']->set('settings.repositories', [
+            'database' => [
+                'type' => \Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository::class,
+                'model' => \Spatie\LaravelSettings\Models\SettingsProperty::class,
+                'table' => 'settings',
+                'connection' => null,
+            ],
+        ]);
+
         $app->booted(function () use ($app) {
             $app->make(\Spatie\LaravelSettings\SettingsContainer::class);
         });

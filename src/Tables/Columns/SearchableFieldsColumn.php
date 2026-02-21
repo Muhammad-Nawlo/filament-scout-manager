@@ -3,6 +3,7 @@
 namespace MuhammadNawlo\FilamentScoutManager\Tables\Columns;
 
 use Filament\Tables\Columns\Column;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 
 class SearchableFieldsColumn extends Column
@@ -12,10 +13,17 @@ class SearchableFieldsColumn extends Column
     public function getState(): mixed
     {
         $record = $this->getRecord();
-        $modelClass = $record->class ?? $record;
+        $modelClass = data_get($record, 'class', $record);
 
         try {
-            $model = new $modelClass;
+            if ($modelClass instanceof Model) {
+                $model = $modelClass;
+            } elseif (is_string($modelClass) && class_exists($modelClass)) {
+                $model = new $modelClass;
+            } else {
+                return [];
+            }
+
             if (method_exists($model, 'toSearchableArray')) {
                 $example = $model->toSearchableArray();
 
@@ -29,7 +37,7 @@ class SearchableFieldsColumn extends Column
             $table = $model->getTable();
 
             return Schema::getColumnListing($table);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return [];
         }
     }

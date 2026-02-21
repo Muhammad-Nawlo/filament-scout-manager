@@ -1,31 +1,19 @@
 <?php
 
+use Illuminate\Database\Eloquent\Model;
 use MuhammadNawlo\FilamentScoutManager\Tables\Columns\SearchableFieldsColumn;
 
 test('getState returns fields from toSearchableArray', function () {
-    $model = new class
+    $searchableModel = new class extends Model
     {
-        public $class;
-
-        public function __construct()
+        public function toSearchableArray(): array
         {
-            $this->class = new class
-            {
-                public function toSearchableArray()
-                {
-                    return ['name' => 'test', 'description' => 'test'];
-                }
-
-                public function getTable()
-                {
-                    return 'test';
-                }
-            };
+            return ['name' => 'test', 'description' => 'test'];
         }
     };
 
     $column = SearchableFieldsColumn::make('searchable_fields');
-    $column->record($model);
+    $column->record(['class' => get_class($searchableModel)]);
 
     $reflection = new ReflectionClass($column);
     $method = $reflection->getMethod('getState');
@@ -36,13 +24,8 @@ test('getState returns fields from toSearchableArray', function () {
 });
 
 test('getState returns empty array on exception', function () {
-    $model = new class
-    {
-        public $class = 'NonExistentClass';
-    };
-
     $column = SearchableFieldsColumn::make('searchable_fields');
-    $column->record($model);
+    $column->record(['class' => 'NonExistentClass']);
 
     $reflection = new ReflectionClass($column);
     $method = $reflection->getMethod('getState');
