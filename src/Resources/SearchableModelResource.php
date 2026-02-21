@@ -299,7 +299,7 @@ class SearchableModelResource extends Resource
         return in_array(\Laravel\Scout\Searchable::class, class_uses_recursive($class));
     }
 
-    protected static function getSearchableModelClasses(): array
+    public static function getSearchableModelClasses(): array
     {
         $classes = [];
         $modelPath = app_path('Models');

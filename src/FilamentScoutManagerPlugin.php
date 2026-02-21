@@ -5,6 +5,8 @@ namespace MuhammadNawlo\FilamentScoutManager;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use MuhammadNawlo\FilamentScoutManager\Resources\SearchableModelResource;
+use MuhammadNawlo\FilamentScoutManager\Resources\SearchQueryLogResource;
+use MuhammadNawlo\FilamentScoutManager\Resources\SynonymResource;
 
 class FilamentScoutManagerPlugin implements Plugin
 {
