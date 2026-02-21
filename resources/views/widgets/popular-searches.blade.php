@@ -2,6 +2,7 @@
     <x-filament::card>
         <div class="space-y-4">
             <h2 class="text-lg font-medium">Search Index Status</h2>
+            @php($searches = $this->getData())
 
             <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div class="bg-primary-50 rounded-lg p-4">
@@ -21,19 +22,31 @@
                     <div class="text-2xl font-bold">{{ number_format($this->getData()['indexed_records']) }}</div>
                 </div>
             </div>
+            <div class="space-y-4">
+                <h2 class="text-lg font-medium">Popular Searches (Last 30 Days)</h2>
 
-            @if(!empty($this->getData()['engines']))
-                <div class="mt-4">
-                    <h3 class="text-sm font-medium mb-2">Engines in Use</h3>
-                    <div class="flex gap-2">
-                        @foreach($this->getData()['engines'] as $engine => $count)
-                            <span class="px-3 py-1 bg-gray-100 rounded-full text-sm">
+                @if(!empty($this->getData()['engines']))
+                    <div class="mt-4">
+                        <h3 class="text-sm font-medium mb-2">Engines in Use</h3>
+                        <div class="flex gap-2">
+                            @foreach($this->getData()['engines'] as $engine => $count)
+                                <span class="px-3 py-1 bg-gray-100 rounded-full text-sm">
                                 {{ str_replace('Engine', '', $engine) }} ({{ $count }})
                             </span>
-                        @endforeach
+                            @endforeach
+                        </div>
+                        @if (empty($searches))
+                            <p class="text-sm text-gray-500">No search data available yet.</p>
+                        @else
+                            <div class="space-y-2">
+                                @foreach ($searches as $search)
+                                    <div class="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                                        <span class="font-medium">{{ $search['query'] }}</span>
+                                        <span class="text-sm text-gray-600">{{ $search['total'] }} searches</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
-                </div>
-            @endif
-        </div>
     </x-filament::card>
 </x-filament::widget>
