@@ -12,6 +12,7 @@ use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
 use MuhammadNawlo\FilamentScoutManager\Commands\InstallFilamentScoutManager;
 use MuhammadNawlo\FilamentScoutManager\Testing\TestsFilamentScoutManager;
+use Spatie\LaravelSettings\SettingsContainer;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -84,14 +85,17 @@ class FilamentScoutManagerServiceProvider extends PackageServiceProvider
                 ], 'filament-scout-manager-stubs');
             }
         }
-        $this->app->afterResolving(\Spatie\LaravelSettings\Settings::class, function ($settingsContainer) {
+        $this->app->afterResolving(SettingsContainer::class, function (SettingsContainer $settingsContainer): void {
+            $settingsClass = \MuhammadNawlo\FilamentScoutManager\Settings\FilamentScoutManagerSettings::class;
+
             if (method_exists($settingsContainer, 'register')) {
-                $settingsContainer->register([
-                    \MuhammadNawlo\FilamentScoutManager\Settings\FilamentScoutManagerSettings::class,
-                ]);
-            } else {
-                // Fallback for older versions (though unlikely)
-                $settingsContainer->addSettingsClass(\MuhammadNawlo\FilamentScoutManager\Settings\FilamentScoutManagerSettings::class);
+                $settingsContainer->register([$settingsClass]);
+
+                return;
+            }
+
+            if (method_exists($settingsContainer, 'add')) {
+                $settingsContainer->add($settingsClass);
             }
         });
 

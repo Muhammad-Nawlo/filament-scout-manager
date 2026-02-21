@@ -12,5 +12,5 @@ test('action sets up correctly', function () {
     expect($action->getLabel())->toBe('Import to Index')
         ->and($action->getIcon())->toBe('heroicon-o-arrow-up-on-square')
         ->and($action->getColor())->toBe('success')
-        ->and($action->requiresConfirmation())->toBeTrue();
+        ->and($action->isConfirmationRequired())->toBeTrue();
 });
