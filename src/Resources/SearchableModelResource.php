@@ -16,10 +16,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
-use MuhammadNawlo\FilamentScoutManager\Models\SearchQueryLog;
 use MuhammadNawlo\FilamentScoutManager\Actions\FlushIndexAction;
 use MuhammadNawlo\FilamentScoutManager\Actions\ImportToScoutAction;
 use MuhammadNawlo\FilamentScoutManager\Actions\RefreshIndexAction;
+use MuhammadNawlo\FilamentScoutManager\Models\SearchQueryLog;
 use MuhammadNawlo\FilamentScoutManager\Settings\FilamentScoutManagerSettings;
 use MuhammadNawlo\FilamentScoutManager\Tables\Columns\SearchableFieldsColumn;
 
