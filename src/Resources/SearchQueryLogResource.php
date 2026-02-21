@@ -25,10 +25,7 @@ class SearchQueryLogResource extends Resource
 
     protected static string | null | \BackedEnum $navigationIcon = 'heroicon-o-magnifying-glass-circle';
 
-
-
     protected static ?string $slug = 'search-logs';
-
 
     public static function getNavigationGroup(): ?string
     {
@@ -49,8 +46,6 @@ class SearchQueryLogResource extends Resource
     {
         return __('filament-scout-manager::filament-scout-manager.logs.plural');
     }
-
-
 
     public static function table(Table $table): Table
     {

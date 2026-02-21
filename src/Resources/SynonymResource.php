@@ -20,10 +20,7 @@ class SynonymResource extends Resource
 
     protected static string | null | \BackedEnum $navigationIcon = 'heroicon-o-link';
 
-
-
     protected static ?string $slug = 'synonyms';
-
 
     public static function getNavigationGroup(): ?string
     {
@@ -44,8 +41,6 @@ class SynonymResource extends Resource
     {
         return __('filament-scout-manager::filament-scout-manager.synonyms.plural');
     }
-
-
 
     public static function form($form): \Filament\Schemas\Schema
     {

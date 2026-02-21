@@ -25,10 +25,7 @@ class SearchableModelResource extends Resource
 {
     protected static string | null | \BackedEnum $navigationIcon = 'heroicon-o-cube';
 
-
-
     protected static ?string $slug = 'searchable-models';
-
 
     public static function getNavigationGroup(): ?string
     {
@@ -49,8 +46,6 @@ class SearchableModelResource extends Resource
     {
         return __('filament-scout-manager::filament-scout-manager.models.plural');
     }
-
-
 
     public static function table(Table $table): Table
     {
