@@ -2,16 +2,35 @@
 
 namespace MuhammadNawlo\FilamentScoutManager\Widgets;
 
-use Filament\Widgets\Widget;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Laravel\Scout\Searchable;
 
-class IndexStatusWidget extends Widget
+class IndexStatusWidget extends StatsOverviewWidget
 {
-    protected string $view = 'filament-scout-manager::widgets.index-status';
-
     protected int | string | array $columnSpan = 'full';
+
+    /**
+     * @return array<Stat>
+     */
+    protected function getStats(): array
+    {
+        $data = $this->getData();
+
+        return [
+            Stat::make('Searchable models', (string) $data['total_models'])
+                ->description(sprintf('%d indexed', $data['indexed_models']))
+                ->color('primary'),
+            Stat::make('Database records', (string) $data['total_records'])
+                ->description(sprintf('%d indexed records', $data['indexed_records']))
+                ->color('success'),
+            Stat::make('Search engines', (string) count($data['engines']))
+                ->description(implode(', ', array_keys($data['engines'])) ?: 'None detected')
+                ->color('warning'),
+        ];
+    }
 
     public function getData(): array
     {
