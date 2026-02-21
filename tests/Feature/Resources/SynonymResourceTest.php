@@ -50,13 +50,13 @@ test('synonym resource table has expected columns, filters and actions', functio
 
     SynonymResource::table($table);
 
-    expect(collect($columns)->map(fn($column) => $column->getName())->all())
+    expect(collect($columns)->map(fn ($column) => $column->getName())->all())
         ->toContain('word', 'model_type', 'synonyms', 'created_at', 'updated_at');
 
-    expect(collect($filters)->map(fn($filter) => $filter->getName())->all())
+    expect(collect($filters)->map(fn ($filter) => $filter->getName())->all())
         ->toContain('model_type');
 
-    expect(collect($actions)->map(fn($action) => $action->getName())->all())
+    expect(collect($actions)->map(fn ($action) => $action->getName())->all())
         ->toContain('edit', 'delete');
 
     expect(array_keys(collect($bulkActions)->first()->getFlatActions()))
