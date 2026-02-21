@@ -1,33 +1,33 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "muhammad-nawlo/filament-scout-manager",
+    "description": "A comprehensive Filament plugin for Laravel Scou",
     "keywords": [
-        ":vendor_name",
+        "Muhammad-Nawlo",
         "laravel",
         "filamentphp",
         "filament",
         "filament-plugin",
-        ":package_slug"
+        "filament-scout-manager"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/muhammad-nawlo/filament-scout-manager",
     "support": {
-        "issues": "https://github.com/:vendor_slug/:package_slug/issues",
-        "source": "https://github.com/:vendor_slug/:package_slug"
+        "issues": "https://github.com/muhammad-nawlo/filament-scout-manager/issues",
+        "source": "https://github.com/muhammad-nawlo/filament-scout-manager"
     },
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Muhammad-Nawlo",
+            "email": "nawlomuhammadit@gmail.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.2",
         "filament/filament": "^5.0",
-        "filament/forms": "^5.0",
-        "filament/tables": "^5.0",
-        "spatie/laravel-package-tools": "^1.15.0"
+        "laravel/scout": "^10.24",
+        "spatie/laravel-package-tools": "^1.15.0",
+        "spatie/laravel-settings": "^3.7"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",
@@ -43,13 +43,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "MuhammadNawlo\\FilamentScoutManager\\": "src/",
+            "MuhammadNawlo\\FilamentScoutManager\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "MuhammadNawlo\\FilamentScoutManager\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -64,10 +64,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "MuhammadNawlo\\FilamentScoutManager\\FilamentScoutManagerServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "FilamentScoutManager": "MuhammadNawlo\\FilamentScoutManager\\Facades\\FilamentScoutManager"
             }
         }
     },
