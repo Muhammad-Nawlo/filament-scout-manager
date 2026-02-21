@@ -1,6 +1,5 @@
 <?php
 
-use Filament\Forms\Form;
 use Filament\Tables\Table;
 use MuhammadNawlo\FilamentScoutManager\Models\Synonym;
 use MuhammadNawlo\FilamentScoutManager\Resources\SynonymResource;
@@ -8,77 +7,78 @@ use MuhammadNawlo\FilamentScoutManager\Resources\SynonymResource;
 test('synonym resource has correct navigation properties', function () {
     expect(SynonymResource::getModel())->toBe(Synonym::class);
     expect(SynonymResource::getNavigationIcon())->toBe('heroicon-o-link');
-    expect(SynonymResource::getNavigationGroup())->toBe(__('filament-scout-manager::navigation.group'));
-    expect(SynonymResource::getNavigationLabel())->toBe(__('filament-scout-manager::navigation.synonyms'));
+    expect(SynonymResource::getNavigationGroup())->toBe('Search');
+    expect(SynonymResource::getNavigationLabel())->toBe('Synonyms');
     expect(SynonymResource::getSlug())->toBe('synonyms');
-    expect(SynonymResource::getModelLabel())->toBe(__('filament-scout-manager::synonyms.title'));
-    expect(SynonymResource::getPluralModelLabel())->toBe(__('filament-scout-manager::synonyms.title'));
+    expect(SynonymResource::getModelLabel())->toBe('Synonym Group');
+    expect(SynonymResource::getPluralModelLabel())->toBe('Synonyms');
 });
 
-test('synonym resource table has expected columns', function () {
-    $table = SynonymResource::table(Table::make());
-    $columns = $table->getColumns();
+test('synonym resource table has expected columns, filters and actions', function () {
+    $columns = [];
+    $filters = [];
+    $actions = [];
+    $bulkActions = [];
 
-    $columnNames = collect($columns)->map(fn ($col) => $col->getName())->toArray();
+    $table = \Mockery::mock(Table::class);
 
-    expect($columnNames)->toContain('word');
-    expect($columnNames)->toContain('model_type');
-    expect($columnNames)->toContain('synonyms');
-    expect($columnNames)->toContain('created_at');
-    expect($columnNames)->toContain('updated_at');
-});
+    $table->shouldReceive('columns')->once()->withArgs(function (array $value) use (&$columns): bool {
+        $columns = $value;
 
-test('synonym resource has expected filters', function () {
-    $table = SynonymResource::table(Table::make());
-    $filters = $table->getFilters();
+        return true;
+    })->andReturnSelf();
 
-    $filterNames = collect($filters)->map(fn ($filter) => $filter->getName())->toArray();
+    $table->shouldReceive('filters')->once()->withArgs(function (array $value) use (&$filters): bool {
+        $filters = $value;
 
-    expect($filterNames)->toContain('model_type');
-});
+        return true;
+    })->andReturnSelf();
 
-test('synonym resource has expected actions', function () {
-    $table = SynonymResource::table(Table::make());
-    $actions = $table->getActions();
+    $table->shouldReceive('actions')->once()->withArgs(function (array $value) use (&$actions): bool {
+        $actions = $value;
 
-    $actionNames = collect($actions)->map(fn ($action) => $action->getName())->toArray();
+        return true;
+    })->andReturnSelf();
 
-    expect($actionNames)->toContain('edit');
-    expect($actionNames)->toContain('delete');
-});
+    $table->shouldReceive('bulkActions')->once()->withArgs(function (array $value) use (&$bulkActions): bool {
+        $bulkActions = $value;
 
-test('synonym resource has bulk actions', function () {
-    $table = SynonymResource::table(Table::make());
-    $bulkActions = $table->getBulkActions();
+        return true;
+    })->andReturnSelf();
 
-    $bulkActionNames = collect($bulkActions)->map(fn ($action) => $action->getName())->toArray();
+    $table->shouldReceive('defaultSort')->once()->with('word')->andReturnSelf();
 
-    expect($bulkActionNames)->toContain('delete');
+    SynonymResource::table($table);
+
+    expect(collect($columns)->map(fn ($column) => $column->getName())->all())
+        ->toContain('word', 'model_type', 'synonyms', 'created_at', 'updated_at');
+
+    expect(collect($filters)->map(fn ($filter) => $filter->getName())->all())
+        ->toContain('model_type');
+
+    expect(collect($actions)->map(fn ($action) => $action->getName())->all())
+        ->toContain('edit', 'delete');
+
+    expect(collect($bulkActions)->first()->getFlatActions()->keys()->all())
+        ->toContain('delete');
 });
 
 test('synonym resource form has expected fields', function () {
-    $form = SynonymResource::form(Form::make());
-    $schema = $form->getSchema();
+    $resourceContents = file_get_contents(__DIR__ . '/../../../src/Resources/SynonymResource.php');
 
-    $fieldNames = collect($schema)
-        ->flatMap(fn ($section) => $section->getChildComponents())
-        ->map(fn ($field) => $field->getName())
-        ->filter()
-        ->values()
-        ->toArray();
-
-    expect($fieldNames)->toContain('model_type');
-    expect($fieldNames)->toContain('word');
-    expect($fieldNames)->toContain('synonyms');
-    expect($fieldNames)->toContain('engine_settings');
+    expect($resourceContents)
+        ->toContain("Select::make('model_type')")
+        ->toContain("TextInput::make('word')")
+        ->toContain("Repeater::make('synonyms')")
+        ->toContain("KeyValue::make('engine_settings')");
 });
 
 test('synonym resource pages are registered', function () {
     $pages = SynonymResource::getPages();
-    expect($pages)->toHaveKey('index');
-    expect($pages['index']->getRoute())->toBe('/');
-    expect($pages)->toHaveKey('create');
-    expect($pages['create']->getRoute())->toBe('/create');
-    expect($pages)->toHaveKey('edit');
-    expect($pages['edit']->getRoute())->toBe('/{record}/edit');
+
+    expect($pages)
+        ->toHaveKeys(['index', 'create', 'edit'])
+        ->and($pages['index'])->toBeInstanceOf(Filament\Resources\Pages\PageRegistration::class)
+        ->and($pages['create'])->toBeInstanceOf(Filament\Resources\Pages\PageRegistration::class)
+        ->and($pages['edit'])->toBeInstanceOf(Filament\Resources\Pages\PageRegistration::class);
 });

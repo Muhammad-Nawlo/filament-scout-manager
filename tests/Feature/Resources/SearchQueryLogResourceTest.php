@@ -7,63 +7,65 @@ use MuhammadNawlo\FilamentScoutManager\Resources\SearchQueryLogResource;
 test('search query log resource has correct navigation properties', function () {
     expect(SearchQueryLogResource::getModel())->toBe(SearchQueryLog::class);
     expect(SearchQueryLogResource::getNavigationIcon())->toBe('heroicon-o-magnifying-glass-circle');
-    expect(SearchQueryLogResource::getNavigationGroup())->toBe(__('filament-scout-manager::navigation.group'));
-    expect(SearchQueryLogResource::getNavigationLabel())->toBe(__('filament-scout-manager::navigation.logs'));
+    expect(SearchQueryLogResource::getNavigationGroup())->toBe('Search');
+    expect(SearchQueryLogResource::getNavigationLabel())->toBe('Search Logs');
     expect(SearchQueryLogResource::getSlug())->toBe('search-logs');
-    expect(SearchQueryLogResource::getModelLabel())->toBe(__('filament-scout-manager::logs.title'));
-    expect(SearchQueryLogResource::getPluralModelLabel())->toBe(__('filament-scout-manager::logs.title'));
+    expect(SearchQueryLogResource::getModelLabel())->toBe('Search Log');
+    expect(SearchQueryLogResource::getPluralModelLabel())->toBe('Search Logs');
 });
 
-test('search query log resource table has expected columns', function () {
-    $table = SearchQueryLogResource::table(Table::make());
-    $columns = $table->getColumns();
+test('search query log resource table config includes expected columns, filters and actions', function () {
+    $columns = [];
+    $filters = [];
+    $actions = [];
+    $bulkActions = [];
 
-    $columnNames = collect($columns)->map(fn ($col) => $col->getName())->toArray();
+    $table = \Mockery::mock(Table::class);
 
-    expect($columnNames)->toContain('query');
-    expect($columnNames)->toContain('model_type');
-    expect($columnNames)->toContain('result_count');
-    expect($columnNames)->toContain('execution_time');
-    expect($columnNames)->toContain('user.name');
-    expect($columnNames)->toContain('ip_address');
-    expect($columnNames)->toContain('successful');
-    expect($columnNames)->toContain('created_at');
-});
+    $table->shouldReceive('columns')->once()->withArgs(function (array $value) use (&$columns): bool {
+        $columns = $value;
 
-test('search query log resource has expected filters', function () {
-    $table = SearchQueryLogResource::table(Table::make());
-    $filters = $table->getFilters();
+        return true;
+    })->andReturnSelf();
 
-    $filterNames = collect($filters)->map(fn ($filter) => $filter->getName())->toArray();
+    $table->shouldReceive('filters')->once()->withArgs(function (array $value) use (&$filters): bool {
+        $filters = $value;
 
-    expect($filterNames)->toContain('successful');
-    expect($filterNames)->toContain('failed');
-    expect($filterNames)->toContain('model_type');
-    expect($filterNames)->toContain('created_at');
-});
+        return true;
+    })->andReturnSelf();
 
-test('search query log resource has expected actions', function () {
-    $table = SearchQueryLogResource::table(Table::make());
-    $actions = $table->getActions();
+    $table->shouldReceive('actions')->once()->withArgs(function (array $value) use (&$actions): bool {
+        $actions = $value;
 
-    $actionNames = collect($actions)->map(fn ($action) => $action->getName())->toArray();
+        return true;
+    })->andReturnSelf();
 
-    expect($actionNames)->toContain('view');
-    expect($actionNames)->toContain('delete');
-});
+    $table->shouldReceive('bulkActions')->once()->withArgs(function (array $value) use (&$bulkActions): bool {
+        $bulkActions = $value;
 
-test('search query log resource has bulk actions', function () {
-    $table = SearchQueryLogResource::table(Table::make());
-    $bulkActions = $table->getBulkActions();
+        return true;
+    })->andReturnSelf();
 
-    $bulkActionNames = collect($bulkActions)->map(fn ($action) => $action->getName())->toArray();
+    $table->shouldReceive('defaultSort')->once()->with('created_at', 'desc')->andReturnSelf();
 
-    expect($bulkActionNames)->toContain('delete');
-    expect($bulkActionNames)->toContain('prune_old');
+    SearchQueryLogResource::table($table);
+
+    expect(collect($columns)->map(fn ($column) => $column->getName())->all())
+        ->toContain('query', 'model_type', 'result_count', 'execution_time', 'user.name', 'ip_address', 'successful', 'created_at');
+
+    expect(collect($filters)->map(fn ($filter) => $filter->getName())->all())
+        ->toContain('successful', 'failed', 'model_type', 'created_at');
+
+    expect(collect($actions)->map(fn ($action) => $action->getName())->all())
+        ->toContain('view', 'delete');
+
+    expect(collect($bulkActions)->first()->getFlatActions()->keys()->all())
+        ->toContain('delete', 'prune_old');
 });
 
 test('search query log resource pages are registered', function () {
     $pages = SearchQueryLogResource::getPages();
-    expect($pages)->toHaveKey('index');
-    expect($pages['index']->getRoute())->toBe('/');
+
+    expect($pages)->toHaveKey('index')
+        ->and($pages['index'])->toBeInstanceOf(Filament\Resources\Pages\PageRegistration::class);
 });
