@@ -9,7 +9,7 @@ class SearchableFieldsColumn extends Column
 {
     protected string $view = 'filament-scout-manager::tables.columns.searchable-fields';
 
-    public function getState()
+    public function getState(): mixed
     {
         $record = $this->getRecord();
         $modelClass = $record->class ?? $record;
@@ -22,7 +22,7 @@ class SearchableFieldsColumn extends Column
                 return array_keys($example);
             }
 
-            if (method_exists($model, 'getFillable') && ! empty($model->getFillable())) {
+            if (method_exists($model, 'getFillable') && !empty($model->getFillable())) {
                 return $model->getFillable();
             }
 

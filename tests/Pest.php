@@ -2,4 +2,5 @@
 
 use MuhammadNawlo\FilamentScoutManager\Tests\TestCase;
 
-uses(TestCase::class)->in(__DIR__);
+
+uses(MuhammadNawlo\FilamentScoutManager\Tests\TestCase::class)->in('Feature', 'Unit');

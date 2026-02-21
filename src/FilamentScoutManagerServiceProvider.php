@@ -86,7 +86,16 @@ class FilamentScoutManagerServiceProvider extends PackageServiceProvider
                 ], 'filament-scout-manager-stubs');
             }
         }
-        app(SettingsContainer::class)->register(FilamentScoutManagerSettings::class);
+        $this->app->afterResolving(\Spatie\LaravelSettings\Settings::class, function ($settingsContainer) {
+            if (method_exists($settingsContainer, 'register')) {
+                $settingsContainer->register([
+                    \MuhammadNawlo\FilamentScoutManager\Settings\FilamentScoutManagerSettings::class,
+                ]);
+            } else {
+                // Fallback for older versions (though unlikely)
+                $settingsContainer->addSettingsClass(\MuhammadNawlo\FilamentScoutManager\Settings\FilamentScoutManagerSettings::class);
+            }
+        });
 
         // Testing
         Testable::mixin(new TestsFilamentScoutManager);

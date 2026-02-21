@@ -13,6 +13,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use MuhammadNawlo\FilamentScoutManager\Actions\FlushIndexAction;
@@ -23,9 +24,8 @@ use MuhammadNawlo\FilamentScoutManager\Tables\Columns\SearchableFieldsColumn;
 
 class SearchableModelResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-cube';
-
-    protected static ?string $navigationGroup = 'Search';
+    protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-cube';
+    protected static string|null|\UnitEnum $navigationGroup = 'Search';
 
     protected static ?string $navigationLabel = 'Searchable Models';
 
@@ -194,7 +194,7 @@ class SearchableModelResource extends Resource
             ]);
     }
 
-    public static function form(Forms\Form $form): Forms\Form
+    public static function form($form): \Filament\Schemas\Schema
     {
         return $form
             ->schema([
@@ -262,7 +262,7 @@ class SearchableModelResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Collection
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         $classes = static::getSearchableModelClasses();
 
