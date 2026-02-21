@@ -20,7 +20,10 @@ class FilamentScoutManagerSettings extends Settings
 
     public function setModelConfig(string $modelClass, array $config): void
     {
-        $this->models[$modelClass] = $config;
+        $models = $this->models;
+        $models[$modelClass] = $config;
+        $this->models = $models;
+
         $this->save();
     }
 }
