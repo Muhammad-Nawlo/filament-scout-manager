@@ -126,6 +126,10 @@ class SearchableModelResource extends Resource
                     ->label(__('filament-scout-manager::filament-scout-manager.models.fields.custom'))
                     ->boolean()
                     ->getStateUsing(function ($record) {
+                        if (! FilamentScoutManagerSettings::repositoryTableExists()) {
+                            return false;
+                        }
+
                         $settings = app(FilamentScoutManagerSettings::class);
 
                         return $settings->getModelConfig($record->class) !== null;

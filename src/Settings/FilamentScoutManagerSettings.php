@@ -2,7 +2,9 @@
 
 namespace MuhammadNawlo\FilamentScoutManager\Settings;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Spatie\LaravelSettings\Exceptions\MissingSettings;
 use Spatie\LaravelSettings\Settings;
 
@@ -22,6 +24,19 @@ class FilamentScoutManagerSettings extends Settings
         return 'filament-scout-manager';
     }
 
+    public static function repositoryTableExists(): bool
+    {
+        $repository = config('settings.default_repository', 'database');
+        $table = config("settings.repositories.{$repository}.table", 'settings');
+        $connection = config("settings.repositories.{$repository}.connection");
+
+        try {
+            return Schema::connection($connection)->hasTable($table);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
     public function getModelConfig(string $modelClass): ?array
     {
         return $this->models[$modelClass] ?? null;
@@ -35,7 +50,7 @@ class FilamentScoutManagerSettings extends Settings
 
         try {
             $this->save();
-        } catch (MissingSettings) {
+        } catch (MissingSettings | QueryException) {
             $this->persistModelsFallback($models);
         }
     }
@@ -45,6 +60,10 @@ class FilamentScoutManagerSettings extends Settings
         $repository = config('settings.default_repository', 'database');
         $table = config("settings.repositories.{$repository}.table", 'settings');
         $connection = config("settings.repositories.{$repository}.connection");
+
+        if (! static::repositoryTableExists()) {
+            return;
+        }
 
         $query = DB::connection($connection)->table($table);
         $now = now();
