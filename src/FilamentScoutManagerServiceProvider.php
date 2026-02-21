@@ -115,8 +115,8 @@ class FilamentScoutManagerServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('filament-scout-manager', __DIR__ . '/../resources/dist/components/filament-scout-manager.js'),
-//            Css::make('filament-scout-manager-styles', __DIR__ . '/../resources/dist/filament-scout-manager.css')->loadedOnRequest(),
-//            Js::make('filament-scout-manager-scripts', __DIR__ . '/../resources/dist/filament-scout-manager.js')->loadedOnRequest(),
+            //            Css::make('filament-scout-manager-styles', __DIR__ . '/../resources/dist/filament-scout-manager.css')->loadedOnRequest(),
+            //            Js::make('filament-scout-manager-scripts', __DIR__ . '/../resources/dist/filament-scout-manager.js')->loadedOnRequest(),
         ];
     }
 
