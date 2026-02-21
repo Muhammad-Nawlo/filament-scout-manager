@@ -1,9 +1,9 @@
 <?php
 
-use MuhammadNawlo\FilamentScoutManager\Resources\SynonymResource;
-use MuhammadNawlo\FilamentScoutManager\Models\Synonym;
-use Filament\Tables\Table;
 use Filament\Forms\Form;
+use Filament\Tables\Table;
+use MuhammadNawlo\FilamentScoutManager\Models\Synonym;
+use MuhammadNawlo\FilamentScoutManager\Resources\SynonymResource;
 
 test('synonym resource has correct navigation properties', function () {
     expect(SynonymResource::getModel())->toBe(Synonym::class);

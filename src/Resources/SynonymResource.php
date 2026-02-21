@@ -3,19 +3,16 @@
 namespace MuhammadNawlo\FilamentScoutManager\Resources;
 
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TagsColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Illuminate\Support\Str;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TagsColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use MuhammadNawlo\FilamentScoutManager\Models\Synonym;
-use MuhammadNawlo\FilamentScoutManager\Resources\SearchableModelResource;
 
 class SynonymResource extends Resource
 {
@@ -43,7 +40,8 @@ class SynonymResource extends Resource
                             ->label('Model')
                             ->options(function () {
                                 $classes = SearchableModelResource::getSearchableModelClasses();
-                                return array_combine($classes, array_map(fn($class) => class_basename($class), $classes));
+
+                                return array_combine($classes, array_map(fn ($class) => class_basename($class), $classes));
                             })
                             ->required()
                             ->searchable()
@@ -119,7 +117,8 @@ class SynonymResource extends Resource
                     ->label('Model')
                     ->options(function () {
                         $classes = SearchableModelResource::getSearchableModelClasses();
-                        return array_combine($classes, array_map(fn($class) => class_basename($class), $classes));
+
+                        return array_combine($classes, array_map(fn ($class) => class_basename($class), $classes));
                     }),
             ])
             ->actions([

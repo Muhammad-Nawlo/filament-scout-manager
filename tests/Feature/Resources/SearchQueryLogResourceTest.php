@@ -1,8 +1,8 @@
 <?php
 
-use MuhammadNawlo\FilamentScoutManager\Resources\SearchQueryLogResource;
-use MuhammadNawlo\FilamentScoutManager\Models\SearchQueryLog;
 use Filament\Tables\Table;
+use MuhammadNawlo\FilamentScoutManager\Models\SearchQueryLog;
+use MuhammadNawlo\FilamentScoutManager\Resources\SearchQueryLogResource;
 
 test('search query log resource has correct navigation properties', function () {
     expect(SearchQueryLogResource::getModel())->toBe(SearchQueryLog::class);
