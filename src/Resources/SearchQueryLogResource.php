@@ -8,6 +8,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\IconColumn;
@@ -148,7 +149,7 @@ class SearchQueryLogResource extends Resource
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    Tables\Actions\BulkAction::make('prune_old')
+                    BulkAction::make('prune_old')
                         ->label('Prune Older Than...')
                         ->icon('heroicon-o-trash')
                         ->color('warning')
