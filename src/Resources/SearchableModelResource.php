@@ -2,14 +2,13 @@
 
 namespace MuhammadNawlo\FilamentScoutManager\Resources;
 
-use Filament\Forms;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
+use Filament\Forms;
+use Filament\Notifications\Notification;
+use Filament\Resources\Resource;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -24,7 +23,7 @@ use MuhammadNawlo\FilamentScoutManager\Tables\Columns\SearchableFieldsColumn;
 
 class SearchableModelResource extends Resource
 {
-    protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-cube';
+    protected static string | null | \BackedEnum $navigationIcon = 'heroicon-o-cube';
 
     protected static ?string $slug = 'searchable-models';
 
@@ -56,7 +55,7 @@ class SearchableModelResource extends Resource
                     ->label(__('filament-scout-manager::filament-scout-manager.models.fields.name'))
                     ->searchable()
                     ->sortable()
-                    ->formatStateUsing(fn($state) => class_basename($state)),
+                    ->formatStateUsing(fn ($state) => class_basename($state)),
 
                 TextColumn::make('index_name')
                     ->label(__('filament-scout-manager::filament-scout-manager.models.fields.index_name'))
@@ -101,7 +100,7 @@ class SearchableModelResource extends Resource
                         return class_basename($engine);
                     })
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn (string $state): string => match ($state) {
                         'AlgoliaEngine' => 'danger',
                         'MeilisearchEngine' => 'warning',
                         'DatabaseEngine' => 'success',
@@ -132,25 +131,25 @@ class SearchableModelResource extends Resource
 
                 TextColumn::make('last_sync')
                     ->label(__('filament-scout-manager::filament-scout-manager.models.fields.last_sync'))
-                    ->getStateUsing(fn() => __('filament-scout-manager::filament-scout-manager.common.not_available'))
+                    ->getStateUsing(fn () => __('filament-scout-manager::filament-scout-manager.common.not_available'))
                     ->since(),
             ])
             ->actions([
                 ActionGroup::make([
                     ImportToScoutAction::make('import')
-                        ->visible(fn($record) => static::isSearchable($record->class)),
+                        ->visible(fn ($record) => static::isSearchable($record->class)),
 
                     FlushIndexAction::make('flush')
-                        ->visible(fn($record) => static::isSearchable($record->class)),
+                        ->visible(fn ($record) => static::isSearchable($record->class)),
 
                     RefreshIndexAction::make('refresh')
-                        ->visible(fn($record) => static::isSearchable($record->class)),
+                        ->visible(fn ($record) => static::isSearchable($record->class)),
 
                     EditAction::make('configure')
                         ->label(__('filament-scout-manager::filament-scout-manager.models.actions.configure'))
                         ->icon('heroicon-o-cog')
-                        ->url(fn($record) => static::getUrl('edit', ['record' => $record->id]))
-                        ->visible(fn($record) => static::isSearchable($record->class)),
+                        ->url(fn ($record) => static::getUrl('edit', ['record' => $record->id]))
+                        ->visible(fn ($record) => static::isSearchable($record->class)),
                 ]),
             ])
             ->bulkActions([
@@ -215,7 +214,7 @@ class SearchableModelResource extends Resource
                     ->schema([
                         Forms\Components\Placeholder::make('model_class')
                             ->label(__('filament-scout-manager::filament-scout-manager.models.fields.model_class'))
-                            ->content(fn($record) => $record->class ?? ''),
+                            ->content(fn ($record) => $record->class ?? ''),
 
                         Forms\Components\Select::make('searchable_fields')
                             ->label(__('filament-scout-manager::filament-scout-manager.models.fields.searchable_fields'))
@@ -281,7 +280,8 @@ class SearchableModelResource extends Resource
 
         $items = [];
         foreach ($classes as $class) {
-            $items[] = new class($class) {
+            $items[] = new class($class)
+            {
                 public $id;
 
                 public $class;
@@ -329,7 +329,7 @@ class SearchableModelResource extends Resource
 
         $configured = config('filament-scout-manager.models', []);
         foreach ($configured as $modelClass => $settings) {
-            if (class_exists($modelClass) && static::isSearchable($modelClass) && !in_array($modelClass, $classes)) {
+            if (class_exists($modelClass) && static::isSearchable($modelClass) && ! in_array($modelClass, $classes)) {
                 $classes[] = $modelClass;
             }
         }
