@@ -3,14 +3,23 @@
 use MuhammadNawlo\FilamentScoutManager\Tables\Columns\SearchableFieldsColumn;
 
 test('getState returns fields from toSearchableArray', function () {
-    $model = new class {
+    $model = new class
+    {
         public $class;
-        public function __construct() {
-            $this->class = new class {
-                public function toSearchableArray() {
+
+        public function __construct()
+        {
+            $this->class = new class
+            {
+                public function toSearchableArray()
+                {
                     return ['name' => 'test', 'description' => 'test'];
                 }
-                public function getTable() { return 'test'; }
+
+                public function getTable()
+                {
+                    return 'test';
+                }
             };
         }
     };
@@ -27,7 +36,8 @@ test('getState returns fields from toSearchableArray', function () {
 });
 
 test('getState returns empty array on exception', function () {
-    $model = new class {
+    $model = new class
+    {
         public $class = 'NonExistentClass';
     };
 

@@ -3,8 +3,8 @@
 namespace MuhammadNawlo\FilamentScoutManager\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use MuhammadNawlo\FilamentScoutManager\FilamentScoutManagerServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'MuhammadNawlo\\FilamentScoutManager\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'MuhammadNawlo\\FilamentScoutManager\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
@@ -32,9 +32,9 @@ class TestCase extends Orchestra
     {
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
 
         $app->booted(function () use ($app) {

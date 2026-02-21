@@ -9,7 +9,7 @@ beforeEach(function () {
 
 test('widget returns empty array when logging disabled', function () {
     config()->set('filament-scout-manager.log_searches', false);
-    $widget = new PopularSearchesWidget();
+    $widget = new PopularSearchesWidget;
     expect($widget->getData())->toBe([]);
 });
 
@@ -18,7 +18,7 @@ test('widget returns popular searches', function () {
     SearchQueryLog::create(['query' => 'test1', 'created_at' => now()->subDay()]);
     SearchQueryLog::create(['query' => 'test2', 'created_at' => now()->subDay()]);
 
-    $widget = new PopularSearchesWidget();
+    $widget = new PopularSearchesWidget;
     $data = $widget->getData();
 
     expect($data)->toHaveCount(2)

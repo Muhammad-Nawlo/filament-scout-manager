@@ -22,7 +22,7 @@ class SearchableFieldsColumn extends Column
                 return array_keys($example);
             }
 
-            if (method_exists($model, 'getFillable') && !empty($model->getFillable())) {
+            if (method_exists($model, 'getFillable') && ! empty($model->getFillable())) {
                 return $model->getFillable();
             }
 

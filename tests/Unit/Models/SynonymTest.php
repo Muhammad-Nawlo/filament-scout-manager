@@ -42,7 +42,7 @@ test('converts to Meilisearch format', function () {
     ]);
 
     expect($synonym->toMeilisearchFormat())->toBe([
-        'laptop' => ['notebook', 'macbook']
+        'laptop' => ['notebook', 'macbook'],
     ]);
 });
 

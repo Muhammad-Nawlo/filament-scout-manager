@@ -3,12 +3,12 @@
 use MuhammadNawlo\FilamentScoutManager\Widgets\IndexStatusWidget;
 
 test('widget has full column span', function () {
-    $widget = new IndexStatusWidget();
+    $widget = new IndexStatusWidget;
     expect($widget->getColumnSpan())->toBe('full');
 });
 
 test('widget returns array data', function () {
-    $widget = new IndexStatusWidget();
+    $widget = new IndexStatusWidget;
     $data = $widget->getData();
 
     expect($data)->toBeArray()

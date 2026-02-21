@@ -14,7 +14,10 @@ test('isSearchable detects trait correctly', function () {
     $method = $reflection->getMethod('isSearchable');
     $method->setAccessible(true);
 
-    $searchableClass = new class { use \Laravel\Scout\Searchable; };
+    $searchableClass = new class
+    {
+        use \Laravel\Scout\Searchable;
+    };
     $nonSearchableClass = new class {};
 
     expect($method->invoke(null, get_class($searchableClass)))->toBeTrue()
