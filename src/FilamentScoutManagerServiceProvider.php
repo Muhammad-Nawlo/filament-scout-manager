@@ -12,10 +12,10 @@ use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
 use MuhammadNawlo\FilamentScoutManager\Commands\InstallFilamentScoutManager;
 use MuhammadNawlo\FilamentScoutManager\Testing\TestsFilamentScoutManager;
-use Spatie\LaravelSettings\SettingsContainer;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Spatie\LaravelSettings\SettingsContainer;
 
 class FilamentScoutManagerServiceProvider extends PackageServiceProvider
 {
