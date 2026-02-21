@@ -2,6 +2,8 @@
 
 namespace MuhammadNawlo\FilamentScoutManager\Settings;
 
+use Illuminate\Support\Facades\DB;
+use Spatie\LaravelSettings\Exceptions\MissingSettings;
 use Spatie\LaravelSettings\Settings;
 
 class FilamentScoutManagerSettings extends Settings
@@ -31,6 +33,30 @@ class FilamentScoutManagerSettings extends Settings
         $models[$modelClass] = $config;
         $this->models = $models;
 
-        $this->save();
+        try {
+            $this->save();
+        } catch (MissingSettings) {
+            $this->persistModelsFallback($models);
+        }
+    }
+
+    private function persistModelsFallback(array $models): void
+    {
+        $repository = config('settings.default_repository', 'database');
+        $table = config("settings.repositories.{$repository}.table", 'settings');
+        $connection = config("settings.repositories.{$repository}.connection");
+
+        $query = DB::connection($connection)->table($table);
+        $now = now();
+
+        $query->updateOrInsert(
+            ['group' => static::group(), 'name' => 'models'],
+            [
+                'payload' => json_encode($models, JSON_THROW_ON_ERROR),
+                'locked' => false,
+                'updated_at' => $now,
+                'created_at' => $now,
+            ]
+        );
     }
 }
