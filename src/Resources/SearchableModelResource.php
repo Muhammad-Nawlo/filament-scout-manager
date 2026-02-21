@@ -12,9 +12,11 @@ use Filament\Resources\Resource;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use MuhammadNawlo\FilamentScoutManager\Models\SearchQueryLog;
 use MuhammadNawlo\FilamentScoutManager\Actions\FlushIndexAction;
 use MuhammadNawlo\FilamentScoutManager\Actions\ImportToScoutAction;
 use MuhammadNawlo\FilamentScoutManager\Actions\RefreshIndexAction;
@@ -274,36 +276,29 @@ class SearchableModelResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    public static function getEloquentQuery(): Builder
     {
         $classes = static::getSearchableModelClasses();
 
-        $items = [];
-        foreach ($classes as $class) {
-            $items[] = new class($class)
-            {
-                public $id;
-
-                public $class;
-
-                public function __construct($class)
-                {
-                    $this->id = md5($class);
-                    $this->class = $class;
-                }
-
-                public function __get($key)
-                {
-                    if ($key === 'id') {
-                        return $this->id;
-                    }
-
-                    return null;
-                }
-            };
+        if ($classes === []) {
+            return SearchQueryLog::query()
+                ->selectRaw('NULL as id, NULL as class, NULL as name')
+                ->whereRaw('1 = 0');
         }
 
-        return new Collection($items);
+        $query = null;
+
+        foreach ($classes as $class) {
+            $select = DB::query()->selectRaw('? as id, ? as class, ? as name', [
+                md5($class),
+                $class,
+                $class,
+            ]);
+
+            $query = $query === null ? $select : $query->unionAll($select);
+        }
+
+        return SearchQueryLog::query()->fromSub($query, 'searchable_models');
     }
 
     protected static function isSearchable(string $class): bool
