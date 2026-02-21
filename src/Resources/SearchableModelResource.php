@@ -139,8 +139,7 @@ class SearchableModelResource extends Resource
 
                 TextColumn::make('last_sync')
                     ->label(__('filament-scout-manager::filament-scout-manager.models.fields.last_sync'))
-                    ->getStateUsing(fn () => __('filament-scout-manager::filament-scout-manager.common.not_available'))
-                    ->since(),
+                    ->getStateUsing(fn () => __('filament-scout-manager::filament-scout-manager.common.not_available')),
             ])
             ->actions([
                 ActionGroup::make([
