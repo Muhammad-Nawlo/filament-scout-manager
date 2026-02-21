@@ -59,7 +59,7 @@ test('search query log resource table config includes expected columns, filters 
     expect(collect($actions)->map(fn ($action) => $action->getName())->all())
         ->toContain('view', 'delete');
 
-    expect(collect($bulkActions)->first()->getFlatActions()->keys()->all())
+    expect(array_keys(collect($bulkActions)->first()->getFlatActions()))
         ->toContain('delete', 'prune_old');
 });
 
