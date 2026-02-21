@@ -3,7 +3,7 @@
 namespace MuhammadNawlo\FilamentScoutManager\Actions;
 
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 
 class FlushIndexAction extends Action
 {
