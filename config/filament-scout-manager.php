@@ -30,4 +30,15 @@ return [
     'models' => [
         // 'App\\Other\\Model' => [],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Algolia User Identification (Informational)
+    |--------------------------------------------------------------------------
+    | When using Algolia, SCOUT_IDENTIFY=true in .env enables passing user ID
+    | and IP to Algolia for analytics. This key mirrors that env for reference
+    | only; the plugin does not use it programmatically. User identification
+    | is controlled by Laravel Scout and your application.
+    */
+    'identify_users' => env('SCOUT_IDENTIFY', false),
 ];

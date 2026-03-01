@@ -20,7 +20,7 @@ class ImportToScoutAction extends Action
             ->icon('heroicon-o-arrow-up-on-square')
             ->color('success')
             ->action(function ($record) {
-                $modelClass = $record->class ?? $record;
+                $modelClass = $record instanceof \Illuminate\Database\Eloquent\Model ? $record->getAttribute('class') : $record;
 
                 try {
                     $modelClass::makeAllSearchable();

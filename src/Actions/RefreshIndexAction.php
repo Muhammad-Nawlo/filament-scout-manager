@@ -20,7 +20,7 @@ class RefreshIndexAction extends Action
             ->icon('heroicon-o-arrow-path')
             ->color('warning')
             ->action(function ($record) {
-                $modelClass = $record->class ?? $record;
+                $modelClass = $record instanceof \Illuminate\Database\Eloquent\Model ? $record->getAttribute('class') : $record;
 
                 try {
                     $modelClass::removeAllFromSearch();

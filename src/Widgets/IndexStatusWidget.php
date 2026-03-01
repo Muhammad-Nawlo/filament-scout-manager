@@ -6,7 +6,12 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
+use Laravel\Scout\Engines\AlgoliaEngine;
+use Laravel\Scout\Engines\DatabaseEngine;
+use Laravel\Scout\Engines\MeilisearchEngine;
+use Laravel\Scout\Engines\TypesenseEngine;
 use Laravel\Scout\Searchable;
+use MuhammadNawlo\FilamentScoutManager\Services\IndexedCountResolver;
 
 class IndexStatusWidget extends StatsOverviewWidget
 {
@@ -36,6 +41,7 @@ class IndexStatusWidget extends StatsOverviewWidget
     {
         return Cache::remember('filament-scout-manager.index-status', 60, function () {
             $models = $this->getSearchableModels();
+            $resolver = app(IndexedCountResolver::class);
 
             $stats = [
                 'total_models' => count($models),
@@ -48,29 +54,53 @@ class IndexStatusWidget extends StatsOverviewWidget
             foreach ($models as $modelClass) {
                 try {
                     $model = new $modelClass;
-                    $engine = class_basename($model->searchableUsing());
+                    $engine = $model->searchableUsing();
+                } catch (\Throwable) {
+                    continue;
+                }
 
-                    $stats['engines'][$engine] = ($stats['engines'][$engine] ?? 0) + 1;
+                $engineLabel = $this->engineLabel($engine);
+                $stats['engines'][$engineLabel] = ($stats['engines'][$engineLabel] ?? 0) + 1;
 
+                try {
                     $totalRecords = $modelClass::count();
                     $stats['total_records'] += $totalRecords;
+                } catch (\Throwable) {
+                    continue;
+                }
 
-                    try {
-                        $indexedRecords = $modelClass::search('')->raw()['nbHits'] ?? 0;
-                        $stats['indexed_records'] += $indexedRecords;
-                        if ($indexedRecords > 0) {
-                            $stats['indexed_models']++;
-                        }
-                    } catch (\Exception $e) {
-                        // ignore
+                $indexedCount = $resolver->resolve($model);
+                if ($indexedCount !== null) {
+                    $stats['indexed_records'] += $indexedCount;
+                    if ($indexedCount > 0) {
+                        $stats['indexed_models']++;
                     }
-                } catch (\Exception $e) {
-                    // skip problematic models
                 }
             }
 
             return $stats;
         });
+    }
+
+    private function engineLabel(object $engine): string
+    {
+        if ($engine instanceof TypesenseEngine) {
+            return 'Typesense';
+        }
+        if ($engine instanceof AlgoliaEngine) {
+            return 'Algolia';
+        }
+        if ($engine instanceof MeilisearchEngine) {
+            return 'Meilisearch';
+        }
+        if ($engine instanceof DatabaseEngine) {
+            return 'Database';
+        }
+        if ($engine instanceof \Laravel\Scout\Engines\CollectionEngine) {
+            return 'Collection';
+        }
+
+        return class_basename($engine);
     }
 
     protected function getSearchableModels(): array

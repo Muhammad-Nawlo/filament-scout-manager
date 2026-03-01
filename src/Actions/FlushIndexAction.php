@@ -20,7 +20,7 @@ class FlushIndexAction extends Action
             ->icon('heroicon-o-trash')
             ->color('danger')
             ->action(function ($record) {
-                $modelClass = $record->class ?? $record;
+                $modelClass = $record instanceof \Illuminate\Database\Eloquent\Model ? $record->getAttribute('class') : $record;
 
                 try {
                     $modelClass::removeAllFromSearch();

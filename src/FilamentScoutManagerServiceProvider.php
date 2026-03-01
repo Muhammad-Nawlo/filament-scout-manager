@@ -59,7 +59,10 @@ class FilamentScoutManagerServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void {}
+    public function packageRegistered(): void
+    {
+        $this->app->singleton(\MuhammadNawlo\FilamentScoutManager\Services\ScoutModelConfigService::class);
+    }
 
     public function packageBooted(): void
     {
