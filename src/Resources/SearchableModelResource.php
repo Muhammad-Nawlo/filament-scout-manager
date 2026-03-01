@@ -539,6 +539,7 @@ class SearchableModelResource extends Resource
             $model = new $class;
             $table = $model->getTable();
             $columns = Schema::getColumnListing($table);
+
             return array_combine($columns, $columns);
         } catch (\Exception $e) {
             return [];

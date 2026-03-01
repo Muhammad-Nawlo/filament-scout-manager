@@ -1,7 +1,5 @@
 <?php
 
-use MuhammadNawlo\FilamentScoutManager\Resources\SearchableModelResource;
-
 test('typesense badge translation key exists', function () {
     $label = __('filament-scout-manager::filament-scout-manager.models.engine_badges.typesense');
 
@@ -9,9 +7,7 @@ test('typesense badge translation key exists', function () {
 });
 
 test('unknown engine displays as class basename in badge', function () {
-    $unknownEngine = new class
-    {
-    };
+    $unknownEngine = new class {};
     $basename = class_basename($unknownEngine);
 
     expect($basename)->not->toBe('')
@@ -19,9 +15,7 @@ test('unknown engine displays as class basename in badge', function () {
 });
 
 test('engine badge color is gray for unknown engine', function () {
-    $unknownEngine = new class
-    {
-    };
+    $unknownEngine = new class {};
     $known = [
         \Laravel\Scout\Engines\AlgoliaEngine::class,
         \Laravel\Scout\Engines\MeilisearchEngine::class,

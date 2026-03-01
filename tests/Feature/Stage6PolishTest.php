@@ -19,9 +19,7 @@ test('identify_users config does not alter IndexedCountResolver behavior', funct
 
         public function searchableUsing()
         {
-            return new class
-            {
-            };
+            return new class {};
         }
     });
     $model = new $modelClass;
@@ -49,6 +47,7 @@ test('plugin does not use identify_users in code', function () {
         $content = file_get_contents($file->getRealPath());
         if (str_contains($content, 'identify_users') || str_contains($content, 'SCOUT_IDENTIFY')) {
             $found = true;
+
             break;
         }
     }
