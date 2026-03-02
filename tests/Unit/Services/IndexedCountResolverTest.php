@@ -61,9 +61,7 @@ test('resolve returns null for unknown engine', function () {
 
         public function searchableUsing()
         {
-            return new class
-            {
-            };
+            return new class {};
         }
     });
 

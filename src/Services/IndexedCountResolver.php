@@ -46,7 +46,7 @@ class IndexedCountResolver
     }
 
     /**
-     * @param array<string, mixed> $raw
+     * @param  array<string, mixed>  $raw
      */
     private function resolveAlgolia(array $raw): ?int
     {
@@ -56,7 +56,7 @@ class IndexedCountResolver
     }
 
     /**
-     * @param array<string, mixed> $raw
+     * @param  array<string, mixed>  $raw
      */
     private function resolveMeilisearch(array $raw): ?int
     {
@@ -66,7 +66,7 @@ class IndexedCountResolver
     }
 
     /**
-     * @param array<string, mixed> $raw
+     * @param  array<string, mixed>  $raw
      */
     private function resolveTypesense(array $raw): ?int
     {
