@@ -65,6 +65,9 @@ return [
         'notifications' => [
             'import_completed' => 'اكتمل الاستيراد: نجح :success وفشل :fail.',
             'flush_completed' => 'اكتمل التفريغ: نجح :success وفشل :fail.',
+            'settings_table_missing_title' => 'تعذر حفظ الإعدادات',
+            'settings_table_missing_body' => 'جدول الإعدادات غير موجود. شغّل `php artisan migrate` (أو `php artisan filament-scout-manager:install`) لإنشائه ثم احفظ مرة أخرى.',
+            'config_saved' => 'تم حفظ إعدادات النموذج القابل للبحث.',
         ],
         'engine_options' => [
             'default' => 'استخدام الافتراضي',

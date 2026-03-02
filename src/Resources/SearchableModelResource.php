@@ -329,6 +329,8 @@ class SearchableModelResource extends Resource
             ->schema([
                 Section::make(__('filament-scout-manager::filament-scout-manager.models.sections.configuration'))
                     ->schema([
+                        Forms\Components\Hidden::make('class'),
+
                         Forms\Components\Placeholder::make('model_class')
                             ->label(__('filament-scout-manager::filament-scout-manager.models.fields.model_class'))
                             ->content(fn ($record) => $record instanceof \Illuminate\Database\Eloquent\Model ? ($record->getAttribute('class') ?? '') : ''),

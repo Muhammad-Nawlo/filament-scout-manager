@@ -285,9 +285,23 @@ The plugin does not override Scout core behavior. All engine-specific logic (ide
 
 ## Testing
 
+The package uses [Pest](https://pestphp.com/) for PHPUnit-style tests. Run the test suite:
+
 ```bash
 composer test
 ```
+
+### Test coverage
+
+- **Plugin**: ID, Filament contract, registration of resources and widgets (SearchableModelResource, SearchQueryLogResource, SynonymResource, IndexStatusWidget, PopularSearchesWidget).
+- **Actions**: Import, Flush, Refresh, Sync Index Settings (labels, icons, confirmation).
+- **Resources**: SearchableModelResource (navigation, `isSearchable`, Eloquent query), engine badges, SearchQueryLogResource, SynonymResource.
+- **Widgets**: IndexStatusWidget (column span, stats), PopularSearchesWidget (data, logging toggle).
+- **Services**: ScoutModelConfigService, ScoutIndexSettingsService, IndexedCountResolver (Algolia/Meilisearch/Typesense raw response parsing, unknown engine).
+- **DTO & traits**: ScoutModelConfigDTO (properties, readonly), UsesScoutManagerConfig / SearchableWithScoutManagerConfig (searchableAs, toSearchableArray, scoutQueueConnection, searchableUsing).
+- **Settings & models**: FilamentScoutManagerSettings, SearchQueryLog, Synonym.
+- **Commands**: Install command (signature, handle).
+- **Localization**: English and Arabic translation keys.
 
 ## Changelog
 

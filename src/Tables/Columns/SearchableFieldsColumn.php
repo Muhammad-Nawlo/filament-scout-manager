@@ -27,6 +27,15 @@ class SearchableFieldsColumn extends Column
             if (method_exists($model, 'toSearchableArray')) {
                 $example = $model->toSearchableArray();
 
+                if (! is_array($example) || empty($example)) {
+                    return [];
+                }
+
+                // If array has numeric keys (list), values are the field names; otherwise keys are
+                if (array_is_list($example)) {
+                    return array_values($example);
+                }
+
                 return array_keys($example);
             }
 
@@ -53,13 +62,10 @@ class SearchableFieldsColumn extends Column
         $displayFields = array_slice($fields, 0, 3);
         $remaining = count($fields) - 3;
 
-        $html = '';
-        foreach ($displayFields as $field) {
-            $html .= '<span class="filament-tables-badge bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded mr-1">' . e($field) . '</span>';
-        }
+        $html = e(implode(', ', $displayFields));
 
         if ($remaining > 0) {
-            $html .= '<span class="text-xs text-gray-500">' . __('filament-scout-manager::filament-scout-manager.models.fields.more_count', ['count' => $remaining]) . '</span>';
+            $html .= ' <span class="text-xs text-gray-500">' . __('filament-scout-manager::filament-scout-manager.models.fields.more_count', ['count' => $remaining]) . '</span>';
         }
 
         return $html;

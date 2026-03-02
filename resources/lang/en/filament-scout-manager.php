@@ -65,6 +65,9 @@ return [
         'notifications' => [
             'import_completed' => 'Import completed: :success succeeded, :fail failed.',
             'flush_completed' => 'Flush completed: :success succeeded, :fail failed.',
+            'settings_table_missing_title' => 'Configuration could not be saved',
+            'settings_table_missing_body' => 'The settings table does not exist. Run `php artisan migrate` (or `php artisan filament-scout-manager:install`) to create it, then save again.',
+            'config_saved' => 'Searchable model configuration saved.',
         ],
         'engine_options' => [
             'default' => 'Use Default',

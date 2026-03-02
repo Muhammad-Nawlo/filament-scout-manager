@@ -23,6 +23,21 @@ class ScoutModelConfigService
         return $this->cache[$modelClass];
     }
 
+    /**
+     * Clear the cache so the next forModel() call reloads from settings.
+     * Call this after saving model config in the panel.
+     */
+    public function clearCache(?string $modelClass = null): void
+    {
+        if ($modelClass !== null) {
+            unset($this->cache[$modelClass]);
+
+            return;
+        }
+
+        $this->cache = [];
+    }
+
     private function resolve(string $modelClass): ?ScoutModelConfigDTO
     {
         try {

@@ -2,11 +2,13 @@
 
 namespace MuhammadNawlo\FilamentScoutManager\Resources\SearchableModelResource\Pages;
 
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use MuhammadNawlo\FilamentScoutManager\Models\SearchableModel;
 use MuhammadNawlo\FilamentScoutManager\Resources\SearchableModelResource;
+use MuhammadNawlo\FilamentScoutManager\Services\ScoutModelConfigService;
 use MuhammadNawlo\FilamentScoutManager\Settings\FilamentScoutManagerSettings;
 
 class EditSearchableModel extends EditRecord
@@ -30,12 +32,17 @@ class EditSearchableModel extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        $record = $this->getRecord();
+        $modelClass = $record->getAttribute('class');
+        if (is_string($modelClass)) {
+            $data['class'] = $modelClass;
+        }
+
         if (! FilamentScoutManagerSettings::repositoryTableExists()) {
             return $data;
         }
 
         $settings = app(FilamentScoutManagerSettings::class);
-        $modelClass = $this->getRecord()->getAttribute('class');
         $config = $settings->getModelConfig($modelClass) ?? [];
 
         $data = array_merge($data, $config);
@@ -64,12 +71,25 @@ class EditSearchableModel extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $modelClass = $data['class'] ?? $this->getRecord()->getAttribute('class');
+        if (! is_string($modelClass) || $modelClass === '') {
+            return $data;
+        }
+
+        FilamentScoutManagerSettings::ensureSettingsTableExists();
+
         if (! FilamentScoutManagerSettings::repositoryTableExists()) {
+            Notification::make()
+                ->title(__('filament-scout-manager::filament-scout-manager.models.notifications.settings_table_missing_title'))
+                ->body(__('filament-scout-manager::filament-scout-manager.models.notifications.settings_table_missing_body'))
+                ->danger()
+                ->persistent()
+                ->send();
+
             return $data;
         }
 
         $settings = app(FilamentScoutManagerSettings::class);
-        $modelClass = $this->getRecord()->getAttribute('class');
         $existingConfig = $settings->getModelConfig($modelClass) ?? [];
         $existingEngineSettings = $existingConfig['engine_settings'] ?? [];
         if (! is_array($existingEngineSettings)) {
@@ -99,6 +119,13 @@ class EditSearchableModel extends EditRecord
         ];
 
         $settings->setModelConfig($modelClass, $config);
+
+        app(ScoutModelConfigService::class)->clearCache($modelClass);
+
+        Notification::make()
+            ->title(__('filament-scout-manager::filament-scout-manager.models.notifications.config_saved'))
+            ->success()
+            ->send();
 
         return $data;
     }

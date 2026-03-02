@@ -163,6 +163,7 @@ class FilamentScoutManagerServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
+            'create_settings_table',
             'create_scout_search_logs_table',
             'create_scout_synonyms_table',
         ];
