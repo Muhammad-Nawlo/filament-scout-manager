@@ -19,7 +19,7 @@ test('dto can be created with all properties', function () {
 });
 
 test('dto can be created with defaults', function () {
-    $dto = new ScoutModelConfigDTO();
+    $dto = new ScoutModelConfigDTO;
 
     expect($dto->indexName)->toBeNull()
         ->and($dto->searchableFields)->toBeNull()
